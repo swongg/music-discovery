@@ -1,19 +1,18 @@
 const express = require("express");
 const app = express();
 // const fqdn = window.location.host;
-const fqdn = "localhost:8888";
+const fqdn = "http://localhost:3000";
 const dotenv = require("dotenv");
+const axios = require("axios");
 const querystring = require("querystring");
 
 dotenv.config();
 
 const port = process.env.PORT;
 const client_id = process.env.CLIENT_ID;
-console.log(client_id);
-
-let client_secret = process.env.CLIENT_SECRET;
+const client_secret = process.env.CLIENT_SECRET;
 const redirect_uri = fqdn + "/callback/";
-console.log(redirect_uri);
+
 /**
  * Generates a random string containing numbers and letters
  * @param  {number} length The length of the string
@@ -45,6 +44,44 @@ app.get("/auth", (req, res) => {
         state: state,
       })
   );
+});
+
+app.get("/callback", (req, res) => {
+  let code = req.query.code || null;
+  let state = req.query.state || null;
+
+  if (state === null) {
+    res.redirect(
+      "/#" +
+        querystring.stringify({
+          error: "state_mismatch",
+        })
+    );
+  } else {
+
+    axios({
+      url: 'https://accounts.spotify.com/api/token',
+      method: 'post',
+      params: {
+        grant_type: 'client_credentials',
+        code: code,
+        redirect_uri: redirect_uri
+      },
+      headers: {
+        'Accept':'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      auth: {
+        username: client_id,
+        password: client_secret
+      }
+    }).then((body) => {
+      let token = body.data.access_token;
+      console.log(token);
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
 });
 
 app.listen(port, () => {
