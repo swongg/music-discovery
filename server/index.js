@@ -5,6 +5,8 @@ const fqdn = "http://localhost:3000";
 const dotenv = require("dotenv");
 const axios = require("axios");
 const querystring = require("querystring");
+const SpotifyWebApi = require("spotify-web-api-node");
+const spotifyApi = new SpotifyWebApi();
 
 dotenv.config();
 
@@ -58,30 +60,41 @@ app.get("/callback", (req, res) => {
         })
     );
   } else {
-
     axios({
-      url: 'https://accounts.spotify.com/api/token',
-      method: 'post',
+      url: "https://accounts.spotify.com/api/token",
+      method: "post",
       params: {
-        grant_type: 'client_credentials',
+        grant_type: "client_credentials",
         code: code,
-        redirect_uri: redirect_uri
+        redirect_uri: redirect_uri,
       },
       headers: {
-        'Accept':'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded'
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
       },
       auth: {
         username: client_id,
-        password: client_secret
-      }
-    }).then((body) => {
-      let token = body.data.access_token;
-      console.log(token);
-    }).catch((err) => {
-      console.log(err);
+        password: client_secret,
+      },
     })
+      .then((body) => {
+        let token = body.data.access_token;
+        console.log(token);
+        spotifyApi.setAccessToken(token);
+        spotifyApi
+          .getArtistAlbums("43ZHCT0cAZBISjO8DG9PnE")
+          .then((albumData) => {
+            console.log(albumData.body);
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
+});
+
+app.get("/refresh_token", (req, res) => {
+  // TODO
 });
 
 app.listen(port, () => {
