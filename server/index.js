@@ -3,7 +3,6 @@ const app = express();
 // const fqdn = window.location.host;
 const fqdn = "http://localhost:3000";
 const dotenv = require("dotenv");
-const axios = require("axios");
 const querystring = require("querystring");
 const SpotifyWebApi = require("spotify-web-api-node");
 
@@ -15,8 +14,9 @@ const client_secret = process.env.CLIENT_SECRET;
 const redirect_uri = fqdn + "/callback/";
 
 const spotifyApi = new SpotifyWebApi({
-  redirectUri: redirect_uri,
   clientId: client_id,
+  clientSecret: client_secret,
+  redirectUri: redirect_uri,
 });
 
 /**
@@ -64,26 +64,11 @@ app.get("/callback", (req, res) => {
         })
     );
   } else {
-    axios({
-      url: "https://accounts.spotify.com/api/token",
-      method: "post",
-      params: {
-        grant_type: "authorization_code",
-        code: code,
-        redirect_uri: redirect_uri,
-      },
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      auth: {
-        username: client_id,
-        password: client_secret,
-      },
-    })
-      .then((body) => {
-        let access_token = body.data.access_token;
-        let refresh_token = body.data.refresh_token;
+    spotifyApi
+      .authorizationCodeGrant(code)
+      .then((data) => {
+        let access_token = data.body["access_token"];
+        let refresh_token = data.body["refresh_token"];
         spotifyApi.setAccessToken(access_token);
         spotifyApi.setRefreshToken(refresh_token);
         spotifyApi.getMyTopTracks().then((tracks) => {
@@ -111,10 +96,6 @@ app.get("/me", (req, res) => {
     console.log(userProfile.body.display_name);
     res.send(userProfile.body);
   });
-});
-
-app.get("/refresh_token", (req, res) => {
-  // TODO
 });
 
 app.listen(port, () => {
