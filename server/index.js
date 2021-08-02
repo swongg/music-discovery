@@ -6,7 +6,6 @@ const dotenv = require("dotenv");
 const axios = require("axios");
 const querystring = require("querystring");
 const SpotifyWebApi = require("spotify-web-api-node");
-const spotifyApi = new SpotifyWebApi();
 
 dotenv.config();
 
@@ -14,6 +13,11 @@ const port = process.env.PORT;
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
 const redirect_uri = fqdn + "/callback/";
+
+const spotifyApi = new SpotifyWebApi({
+  redirectUri: redirect_uri,
+  clientId: client_id,
+});
 
 /**
  * Generates a random string containing numbers and letters
@@ -33,19 +37,19 @@ let generateRandomString = function (length) {
 
 app.get("/auth", (req, res) => {
   let state = generateRandomString(16);
-  let scope =
-    "user-read-recently-played user-top-read user-read-currently-playing user-library-read playlist-modify-public playlist-modify-private";
+  let scopes = [
+    "user-read-recently-played",
+    "user-read-playback-state",
+    "user-top-read user-read-currently-playing",
+    "user-library-read playlist-modify-public",
+    "playlist-modify-private",
+  ];
 
-  res.redirect(
-    "https://accounts.spotify.com/authorize?" +
-      querystring.stringify({
-        response_type: "code",
-        client_id: client_id,
-        scope: scope,
-        redirect_uri: redirect_uri,
-        state: state,
-      })
-  );
+  // Setting credentials can be done in the wrapper's constructor, or using the API object's setters.
+
+  // Create the authorization URL
+  var authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
+  res.redirect(authorizeURL);
 });
 
 app.get("/callback", (req, res) => {
@@ -64,7 +68,7 @@ app.get("/callback", (req, res) => {
       url: "https://accounts.spotify.com/api/token",
       method: "post",
       params: {
-        grant_type: "client_credentials",
+        grant_type: "authorization_code",
         code: code,
         redirect_uri: redirect_uri,
       },
@@ -78,19 +82,25 @@ app.get("/callback", (req, res) => {
       },
     })
       .then((body) => {
-        let token = body.data.access_token;
-        console.log(token);
-        spotifyApi.setAccessToken(token);
-        spotifyApi
-          .getArtistAlbums("43ZHCT0cAZBISjO8DG9PnE")
-          .then((albumData) => {
-            console.log(albumData.body);
-          });
+        let access_token = body.data.access_token;
+        spotifyApi.setAccessToken(access_token);
+        spotifyApi.getMyTopTracks().then((tracks) => {
+          console.log("your top song: " + tracks.body.items[0].name);
+          res.redirect("/topartists/");
+        });
       })
       .catch((err) => {
         console.log(err);
       });
   }
+});
+
+app.get("/topartists", (req, res) => {
+  console.log("now we're at top artists end point");
+  spotifyApi.getMyTopArtists().then((artists) => {
+    console.log("your top artist: " + artists.body.items[0].name);
+    res.send(artists.body.items);
+  });
 });
 
 app.get("/refresh_token", (req, res) => {
