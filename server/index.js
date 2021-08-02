@@ -83,10 +83,12 @@ app.get("/callback", (req, res) => {
     })
       .then((body) => {
         let access_token = body.data.access_token;
+        let refresh_token = body.data.refresh_token;
         spotifyApi.setAccessToken(access_token);
+        spotifyApi.setRefreshToken(refresh_token);
         spotifyApi.getMyTopTracks().then((tracks) => {
           console.log("your top song: " + tracks.body.items[0].name);
-          res.redirect("/topartists/");
+          res.redirect("/me/");
         });
       })
       .catch((err) => {
@@ -100,6 +102,14 @@ app.get("/topartists", (req, res) => {
   spotifyApi.getMyTopArtists().then((artists) => {
     console.log("your top artist: " + artists.body.items[0].name);
     res.send(artists.body.items);
+  });
+});
+
+app.get("/me", (req, res) => {
+  console.log("now we're at the me end point");
+  spotifyApi.getMe().then((userProfile) => {
+    console.log(userProfile.body.display_name);
+    res.send(userProfile.body);
   });
 });
 
