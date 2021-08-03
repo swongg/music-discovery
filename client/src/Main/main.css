@@ -1,0 +1,28 @@
+.default-background__main {
+  background: rgb(0, 168, 150);
+  background: linear-gradient(
+    90deg,
+    rgba(5, 102, 141, 0.6) 100%,
+    rgba(0, 168, 150, 0.75) 30%
+  );
+}
+
+.center-outer__main {
+  height: 100vh;
+  width: 100%;
+  position: relative;
+}
+
+.center-inner__main {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.button-center-round {
+  margin-top: 30px !important;
+  border-radius: 20px !important;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
