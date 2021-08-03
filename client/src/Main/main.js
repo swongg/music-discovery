@@ -19,6 +19,9 @@ const Main = (props) => {
     spotifyApi.setAccessToken(access_token);
     spotifyApi.getMe().then((res) => {
       setUsername(res.body.display_name);
+      spotifyApi.getMyTopTracks().then((tracks) => {
+        console.log("your top song: " + tracks.body.items[0].name);
+      });
     });
   }, [access_token]);
 
