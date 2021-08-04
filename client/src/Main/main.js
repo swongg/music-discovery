@@ -20,6 +20,7 @@ const Main = () => {
       .then((response) => response.json())
       .then((songs) => {
         let song = songs.body.items[0].name;
+        console.log(song);
         setTopSong(song);
       });
   });
