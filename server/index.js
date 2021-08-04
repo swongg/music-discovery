@@ -1,17 +1,18 @@
 const express = require("express");
-const app = express();
 // const fqdn = window.location.host;
-const fqdn = "http://localhost:3000";
 const dotenv = require("dotenv");
 const querystring = require("querystring");
 const SpotifyWebApi = require("spotify-web-api-node");
+const cors = require("cors");
+const app = express();
+app.use(cors());
 
 dotenv.config();
 
 const port = process.env.PORT;
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
-const redirect_uri = fqdn + "/callback/";
+const redirect_uri = process.env.REDIRECT_URI;
 
 const spotifyApi = new SpotifyWebApi({
   clientId: client_id,
@@ -56,7 +57,7 @@ app.get("/callback", (req, res) => {
   let code = req.query.code || null;
   let state = req.query.state || null;
 
-  if (state === null) {
+  if (state === null || code === null) {
     res.redirect(
       "/#" +
         querystring.stringify({
@@ -71,10 +72,7 @@ app.get("/callback", (req, res) => {
         let refresh_token = data.body["refresh_token"];
         spotifyApi.setAccessToken(access_token);
         spotifyApi.setRefreshToken(refresh_token);
-        spotifyApi.getMyTopTracks().then((tracks) => {
-          console.log("your top song: " + tracks.body.items[0].name);
-          res.redirect("/me/");
-        });
+        res.redirect("http://localhost:3000/main");
       })
       .catch((err) => {
         console.log(err);
@@ -82,20 +80,26 @@ app.get("/callback", (req, res) => {
   }
 });
 
-app.get("/topartists", (req, res) => {
-  console.log("now we're at top artists end point");
-  spotifyApi.getMyTopArtists().then((artists) => {
-    console.log("your top artist: " + artists.body.items[0].name);
-    res.send(artists.body.items);
-  });
+app.get("/toptracks", (req, res) => {
+  spotifyApi
+    .getMyTopTracks()
+    .then((tracks) => {
+      res.json(tracks);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
-app.get("/me", (req, res) => {
-  console.log("now we're at the me end point");
-  spotifyApi.getMe().then((userProfile) => {
-    console.log(userProfile.body.display_name);
-    res.send(userProfile.body);
-  });
+app.get("/user", (req, res) => {
+  spotifyApi
+    .getMe()
+    .then((userProfile) => {
+      res.json(userProfile);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 app.listen(port, () => {
