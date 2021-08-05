@@ -27,6 +27,7 @@ const Main = () => {
         //let song = songs.body.items[0].name;
         let songs_ = songs.body.items;
         setTopSongs(songs_);
+        if (option == 0) setDisplayList(topSongs);
       });
   });
 
@@ -63,7 +64,7 @@ const Main = () => {
               <Tab label="Liked Songs" />
             </Tabs>
           </Paper>
-          {displayList.length > 0 && (
+          {displayList && displayList.length > 0 && (
             <div>
               {displayList.map((item) => (
                 <div key={item.id}>{item.name}</div>
