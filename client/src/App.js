@@ -1,12 +1,21 @@
 import React from "react";
 import Landing from "./Landing/landing";
 import Main from "./Main/main";
+import { BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import "./App.css";
 
-const code = new URLSearchParams(window.location.search).get("code");
 
 function App() {
-  return code ? <Main token={code} /> : <Landing />;
+  return (
+    <Router> 
+    <div className="App">
+      <Switch>
+        <Route path='/' exact component={Landing} />
+        <Route path='/main' component={Main} />
+      </Switch>
+    </div>
+    </Router>
+  );
 }
 
 export default App;

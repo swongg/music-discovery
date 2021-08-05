@@ -1,40 +1,36 @@
-import React, { useState, useEffect } from "react";
-import Auth from "../Auth/auth";
+import React, { useState, useLayoutEffect } from "react";
 import Title from "../UI/title";
 import "./main.css";
-import SpotifyWebApi from "spotify-web-api-node";
 
-const spotifyApi = new SpotifyWebApi({
-  clientId: "eb9ffba84f184d05a10d55b63b6c651d",
-});
-
-const Main = (props) => {
-  const code = props.token;
-  const access_token = Auth(code);
-
+const Main = () => {
   const [username, setUsername] = useState();
+  const [topSong, setTopSong] = useState();
 
-  useEffect(() => {
-    if (!access_token) return;
-    spotifyApi.setAccessToken(access_token);
-    spotifyApi.getMe().then((res) => {
-      setUsername(res.body.display_name);
-      spotifyApi.getMyTopTracks().then((tracks) => {
-        console.log("your top song: " + tracks.body.items[0].name);
+  useLayoutEffect(() => {
+    fetch("http://localhost:8888/user")
+      .then((response) => response.json())
+      .then((userInfo) => {
+        let username = userInfo.body.display_name;
+        setUsername(username);
       });
-    });
-  }, [access_token]);
+  });
+
+  useLayoutEffect(() => {
+    fetch("http://localhost:8888/toptracks")
+      .then((response) => response.json())
+      .then((songs) => {
+        let song = songs.body.items[0].name;
+        console.log(song);
+        setTopSong(song);
+      });
+  });
 
   return (
     <div className="default-background__main">
       <div className="center-outer__main">
         <div className="center-inner__main">
           <Title content="Welcome" user={username} type="main" />
-          <Title
-            content="Neque porro quisquam est qui dolorem ipsum quia dolo sit amet,
-        consectetur, adipsci velit"
-            type="sub"
-          />
+          <Title content={"Your top song: " + topSong} type="sub"></Title>
         </div>
       </div>
     </div>

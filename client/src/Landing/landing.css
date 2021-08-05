@@ -21,6 +21,7 @@
 }
 
 .button-center-round {
+  position: absolute;
   margin-top: 30px !important;
   border-radius: 20px !important;
   left: 50%;
