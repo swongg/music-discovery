@@ -44,6 +44,7 @@ app.get("/auth", (req, res) => {
     "user-top-read user-read-currently-playing",
     "user-library-read playlist-modify-public",
     "playlist-modify-private",
+    "playlist-read-private",
   ];
 
   // Setting credentials can be done in the wrapper's constructor, or using the API object's setters.
@@ -85,6 +86,28 @@ app.get("/toptracks", (req, res) => {
     .getMyTopTracks()
     .then((tracks) => {
       res.json(tracks);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+app.get("/savedTracks", (req, res) => {
+  spotifyApi
+    .getMySavedTracks()
+    .then((lists) => {
+      res.json(lists);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+app.get("/playlists", (req, res) => {
+  spotifyApi
+    .getUserPlaylists()
+    .then((lists) => {
+      res.json(lists);
     })
     .catch((err) => {
       console.log(err);
