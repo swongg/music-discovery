@@ -15,9 +15,9 @@
 
 .center-inner__main {
   position: absolute;
-  top: 20%;
+  top: 100px;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, 0%);
 }
 
 .button-center-round {
@@ -25,4 +25,29 @@
   border-radius: 20px !important;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.filter__main {
+  margin-top: 20px;
+}
+
+.button__main {
+  color: white !important;
+}
+
+.Tabs__main {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.Mui-selected {
+  color: white !important;
+}
+
+.MuiTabs-indicator {
+  background-color: white !important;
+}
+
+.MuiTab-root {
+  color: rgba(255, 255, 255, 0.9) !important;
 }
