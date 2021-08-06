@@ -92,7 +92,7 @@ app.get("/toptracks", (req, res) => {
     });
 });
 
-app.get("/savedTracks", (req, res) => {
+app.get("/savedtracks", (req, res) => {
   spotifyApi
     .getMySavedTracks()
     .then((lists) => {
