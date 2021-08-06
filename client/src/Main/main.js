@@ -19,26 +19,45 @@ const Main = () => {
 
   useEffect(() => {
     console.log("in useEffect");
-    Promise.all([
-      fetch(serverUri + "user").then((res) => res.json()),
-      fetch(serverUri + "toptracks").then((res) => res.json()),
-      fetch(serverUri + "savedtracks").then((res) => res.json()),
-    ])
-      .then(([userInfo, topTracksInfo, savedTracksInfo]) => {
-        let username = userInfo.body.display_name;
-        setUsername(username);
-        let topTracks = topTracksInfo.body.items;
-        setTopSongs(topTracks);
-        let savedTracks = savedTracksInfo.body.items.map((t) => t.track);
-        setSavedTracks(savedTracks);
-      })
-      .then(() => {
-        if (option === options.TOPTRACKS_ && topSongs) {
-          setDisplayList(topSongs);
-        } else if (option === options.SAVEDTRACKS_ && savedTracks) {
-          setDisplayList(savedTracks);
-        }
-      });
+
+    if (
+      "users" in localStorage &&
+      "toptracks" in localStorage &&
+      "savedtracks" in localStorage
+    ) {
+      let username = localStorage.getItem("username");
+      setUsername(username);
+      let topTracks = JSON.parse(localStorage.getItem("topTracks"));
+      setTopSongs(topTracks);
+      let savedTracks = JSON.parse(localStorage.getItem("savedTracks"));
+      setSavedTracks(savedTracks);
+
+    } else {
+      Promise.all([
+        fetch(serverUri + "user").then((res) => res.json()),
+        fetch(serverUri + "toptracks").then((res) => res.json()),
+        fetch(serverUri + "savedtracks").then((res) => res.json()),
+      ])
+        .then(([userInfo, topTracksInfo, savedTracksInfo]) => {
+          let username = userInfo.body.display_name;
+          setUsername(username);
+          localStorage.setItem("username", username);
+          let topTracks = topTracksInfo.body.items;
+          localStorage.setItem("topTracks", JSON.stringify(topTracks));
+          setTopSongs(topTracks);
+          let savedTracks = savedTracksInfo.body.items.map((t) => t.track);
+          console.log(savedTracks);
+          localStorage.setItem("savedTracks", JSON.stringify(savedTracks));
+          setSavedTracks(savedTracks);
+        })
+        .then(() => {
+          if (option === options.TOPTRACKS_ && topSongs) {
+            setDisplayList(topSongs);
+          } else if (option === options.SAVEDTRACKS_ && savedTracks) {
+            setDisplayList(savedTracks);
+          }
+        });
+    }
   }, [option]);
 
   const optionChange = (event, newOption) => {
