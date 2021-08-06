@@ -18,45 +18,41 @@ const Main = () => {
   const [displayList, setDisplayList] = useState([]);
 
   useEffect(() => {
-    console.log("in useEffect");
-
     if (
       "users" in localStorage &&
       "toptracks" in localStorage &&
       "savedtracks" in localStorage
     ) {
       let username = localStorage.getItem("username");
-      setUsername(username);
       let topTracks = JSON.parse(localStorage.getItem("topTracks"));
-      setTopSongs(topTracks);
       let savedTracks = JSON.parse(localStorage.getItem("savedTracks"));
+      setUsername(username);
+      setTopSongs(topTracks);
       setSavedTracks(savedTracks);
-
     } else {
       Promise.all([
         fetch(serverUri + "user").then((res) => res.json()),
         fetch(serverUri + "toptracks").then((res) => res.json()),
         fetch(serverUri + "savedtracks").then((res) => res.json()),
-      ])
-        .then(([userInfo, topTracksInfo, savedTracksInfo]) => {
-          let username = userInfo.body.display_name;
-          setUsername(username);
-          localStorage.setItem("username", username);
-          let topTracks = topTracksInfo.body.items;
-          localStorage.setItem("topTracks", JSON.stringify(topTracks));
-          setTopSongs(topTracks);
-          let savedTracks = savedTracksInfo.body.items.map((t) => t.track);
-          console.log(savedTracks);
-          localStorage.setItem("savedTracks", JSON.stringify(savedTracks));
-          setSavedTracks(savedTracks);
-        })
-        .then(() => {
-          if (option === options.TOPTRACKS_ && topSongs) {
-            setDisplayList(topSongs);
-          } else if (option === options.SAVEDTRACKS_ && savedTracks) {
-            setDisplayList(savedTracks);
-          }
-        });
+      ]).then(([userInfo, topTracksInfo, savedTracksInfo]) => {
+        let username = userInfo.body.display_name;
+        let topTracks = topTracksInfo.body.items;
+        let savedTracks = savedTracksInfo.body.items.map((t) => t.track);
+        setUsername(username);
+        setTopSongs(topTracks);
+        setSavedTracks(savedTracks);
+        localStorage.setItem("username", username);
+        localStorage.setItem("topTracks", JSON.stringify(topTracks));
+        localStorage.setItem("savedTracks", JSON.stringify(savedTracks));
+      });
+    }
+  }, [option]);
+
+  useEffect(() => {
+    if (option === options.TOPTRACKS_ && topSongs) {
+      setDisplayList(topSongs);
+    } else if (option === options.SAVEDTRACKS_ && savedTracks) {
+      setDisplayList(savedTracks);
     }
   }, [option]);
 
