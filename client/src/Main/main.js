@@ -1,57 +1,49 @@
-import React, { useState, useLayoutEffect, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Title from "../UI/title";
 import "./main.css";
 import { Paper, Tabs, Tab } from "@material-ui/core";
+
+const options = {
+  TOPTRACKS_: 0,
+  SAVEDTRACKS_: 1,
+};
 
 const Main = () => {
   const [username, setUsername] = useState();
   const [topSongs, setTopSongs] = useState();
   let [savedTracks, setSavedTracks] = useState();
+  let serverUri = "http://localhost:8888/";
 
-  const [option, setOption] = useState(0);
+  const [option, setOption] = useState(options.TOPTRACKS_);
   const [displayList, setDisplayList] = useState([]);
 
-  useLayoutEffect(() => {
-    fetch("http://localhost:8888/user")
-      .then((response) => response.json())
-      .then((userInfo) => {
+  useEffect(() => {
+    console.log("in useEffect");
+    Promise.all([
+      fetch(serverUri + "user").then((res) => res.json()),
+      fetch(serverUri + "toptracks").then((res) => res.json()),
+      fetch(serverUri + "savedtracks").then((res) => res.json()),
+    ])
+      .then(([userInfo, topTracksInfo, savedTracksInfo]) => {
         let username = userInfo.body.display_name;
         setUsername(username);
+        let topTracks = topTracksInfo.body.items;
+        setTopSongs(topTracks);
+        let savedTracks = savedTracksInfo.body.items.map((t) => t.track);
+        setSavedTracks(savedTracks);
+      })
+      .then(() => {
+        if (option === options.TOPTRACKS_ && topSongs) {
+          setDisplayList(topSongs);
+        } else if (option === options.SAVEDTRACKS_ && savedTracks) {
+          setDisplayList(savedTracks);
+        }
       });
-  });
-
-  useLayoutEffect(() => {
-    fetch("http://localhost:8888/toptracks")
-      .then((response) => response.json())
-      .then((songs) => {
-        //let song = songs.body.items[0].name;
-        let songs_ = songs.body.items;
-        setTopSongs(songs_);
-        if (option == 0) setDisplayList(topSongs);
-      });
-  });
-
-  useLayoutEffect(() => {
-    fetch("http://localhost:8888/savedTracks")
-      .then((response) => response.json())
-      .then((songs) => {
-        let songs_ = songs.body.items.map((t) => t.track);
-        setSavedTracks(songs_);
-      });
-  });
-
-  const handleChange = (event, newValue) => {
-    setOption(newValue);
-  };
-
-  useEffect(() => {
-    if (option === 0 && topSongs) {
-      setDisplayList(topSongs);
-    }
-    if (option === 1 && savedTracks) {
-      setDisplayList(savedTracks);
-    }
   }, [option]);
+
+  const optionChange = (event, newOption) => {
+    setOption(newOption);
+  };
 
   return (
     <div className="default-background__main">
@@ -59,7 +51,7 @@ const Main = () => {
         <div className="center-inner__main">
           {username && <Title content="Welcome" user={username} type="main" />}
           <Paper square className="Tabs__main">
-            <Tabs value={option} onChange={handleChange} centered>
+            <Tabs value={option} onChange={optionChange} centered>
               <Tab label="Most Played Songs" />
               <Tab label="Liked Songs" />
             </Tabs>
