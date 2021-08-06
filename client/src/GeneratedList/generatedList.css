@@ -1,0 +1,79 @@
+.default-background__generatedlist {
+  background: rgb(2, 128, 144);
+  background: linear-gradient(
+    180deg,
+    rgba(2, 128, 144, 0.8) 0%,
+    rgba(2, 195, 154, 0.7) 100%
+  );
+}
+
+.center-outer__generatedlist {
+  height: 450vh;
+  width: 100vw;
+  position: relative;
+}
+
+.center-inner__generatedlist {
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  transform: translate(-50%, 0%);
+}
+
+.button-center-round {
+  margin-top: 30px !important;
+  border-radius: 20px !important;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.button__main {
+  color: white !important;
+}
+
+.title {
+  font-size: 36px;
+}
+
+img {
+  border-radius: 10px;
+  max-width: 100px;
+  height: auto;
+  padding: 10px 0px;
+}
+
+.MuiCard-root {
+  margin-bottom: 8px;
+}
+
+.information__list {
+  padding: 10px;
+}
+.information__list p {
+  text-align: left;
+}
+
+.recList {
+  margin-top: 20px;
+}
+
+.recList > .MuiPaper-root {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+  max-height: 150px;
+}
+.audioPlayer {
+  float: right;
+}
+
+.audioPlayer div {
+  box-shadow: none !important;
+  background-color: transparent !important;
+}
+
+.audioPlayer .MuiTypography-body1 {
+  display: none;
+}
+
+.audioPlayer .MuiSvgIcon-root:hover {
+  color: rgba(0, 0, 0, 0.3) !important;
+}
