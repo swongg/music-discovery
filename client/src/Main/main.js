@@ -77,7 +77,6 @@ const Main = () => {
           {displayList && displayList.length > 0 && (
             <div>
               {displayList.map((item) => (
-                // <div key={item.id}>{item.name}</div>
                 <div key={item.id}>
                   <img className="albumPhoto" src={item.album.images[0].url} />
                 </div>
