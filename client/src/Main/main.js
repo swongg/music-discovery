@@ -19,9 +19,9 @@ const Main = () => {
 
   useEffect(() => {
     if (
-      "users" in localStorage &&
-      "toptracks" in localStorage &&
-      "savedtracks" in localStorage
+      "username" in localStorage &&
+      "topTracks" in localStorage &&
+      "savedTracks" in localStorage
     ) {
       let username = localStorage.getItem("username");
       let topTracks = JSON.parse(localStorage.getItem("topTracks"));
@@ -29,6 +29,9 @@ const Main = () => {
       setUsername(username);
       setTopSongs(topTracks);
       setSavedTracks(savedTracks);
+      setTimeout(function () {
+        setDisplayList(topTracks);
+      });
     } else {
       Promise.all([
         fetch(serverUri + "user").then((res) => res.json()),
@@ -46,7 +49,7 @@ const Main = () => {
         localStorage.setItem("savedTracks", JSON.stringify(savedTracks));
       });
     }
-  }, [option]);
+  }, []);
 
   useEffect(() => {
     if (option === options.TOPTRACKS_ && topSongs) {
