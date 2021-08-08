@@ -48,20 +48,24 @@ const GeneratedList = () => {
                       {/* part on the right */}
                       <Grid item xs={9}>
                         <div className="information__list">
-                          <Typography>{item.name}</Typography>
-                          <Typography color="textSecondary">
-                            {item.artists.map((artist) => (
-                              <span key={artist.id}>{artist.name} </span>
-                            ))}
-                          </Typography>
-                          <Typography color="textSecondary">
-                            <span>{item.album.release_date} </span>
-                          </Typography>
+                          <div className="songTexts__list">
+                            <Typography className="songName__list">
+                              {item.name}
+                            </Typography>
+                            <Typography
+                              className="artistName__list"
+                              color="textSecondary"
+                            >
+                              {item.artists.map((artist) => (
+                                <span key={artist.id}>{artist.name} </span>
+                              ))}
+                            </Typography>
+                          </div>
                           {/* music player from material-ui-audio-player*/}
                           <div className="audioPlayer">
                             <AudioPlayer
                               src={item.preview_url}
-                              width="200px"
+                              width="220px"
                               volume={false}
                             ></AudioPlayer>
                           </div>
