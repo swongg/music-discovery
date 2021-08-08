@@ -21,7 +21,7 @@ const Entity = (props) => {
       fetch(`http://localhost:8888/savetrack/?id=${item.id}`, requestOptions)
         .then((response) => response.json())
         .then(() => {
-          alert("successfully added");
+          console.log("successfully added");
         });
     }
     if (isClick === false) {
@@ -32,7 +32,7 @@ const Entity = (props) => {
       fetch(`http://localhost:8888/removetrack/?id=${item.id}`, requestOptions)
         .then((response) => response.json())
         .then(() => {
-          alert("successfully removed");
+          console.log("successfully removed");
         });
     }
   }, [isClick]);
