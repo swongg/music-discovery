@@ -93,8 +93,11 @@ app.get("/toptracks", (req, res) => {
 });
 
 app.get("/savedtracks", (req, res) => {
+  let num = req.query.num;
   spotifyApi
-    .getMySavedTracks()
+    .getMySavedTracks({
+      limit: num,
+    })
     .then((lists) => {
       res.json(lists);
     })
@@ -119,6 +122,22 @@ app.get("/user", (req, res) => {
     .getMe()
     .then((userProfile) => {
       res.json(userProfile);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+app.get("/recommendations", (req, res) => {
+  let seeds = req.query.seeds.split(",");
+  spotifyApi
+    .getRecommendations({
+      min_energy: 0.4,
+      seed_tracks: seeds,
+      min_popularity: 50,
+    })
+    .then((recommendations) => {
+      res.json(recommendations);
     })
     .catch((err) => {
       console.log(err);

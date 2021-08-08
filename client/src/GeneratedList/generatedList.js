@@ -6,10 +6,9 @@ import { Card, Grid, Typography, Grow } from "@material-ui/core";
 
 const GeneratedList = () => {
   const [username, setUsername] = useState();
-  let [savedTracks, setSavedTracks] = useState();
   const [displayList, setDisplayList] = useState([]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     fetch("http://localhost:8888/user")
       .then((response) => response.json())
       .then((userInfo) => {
@@ -18,13 +17,25 @@ const GeneratedList = () => {
       });
   }, []);
 
-  useLayoutEffect(() => {
-    fetch("http://localhost:8888/savedTracks")
+  // this is so nast
+  useEffect(() => {
+    fetch("http://localhost:8888/savedTracks/?num=5")
       .then((response) => response.json())
       .then((songs) => {
+        let seeds = "";
         let songs_ = songs.body.items.map((t) => t.track);
-        setSavedTracks(songs_);
-        setDisplayList(songs_);
+        for (let s of songs_) {
+          seeds = seeds + "," + s.id;
+        }
+        seeds = seeds.substring(1);
+        setTimeout(() => {
+          fetch(`http://localhost:8888/recommendations/?seeds=${seeds}`)
+            .then((response) => response.json())
+            .then((songs) => {
+              let songs_ = songs.body.tracks;
+              setDisplayList(songs_);
+            });
+        }, 1);
       });
   }, []);
 
@@ -39,18 +50,17 @@ const GeneratedList = () => {
             <div className="recList">
               {displayList.map((item) => (
                 <Grow
+                  key={item.id}
                   in={true}
                   style={{ transformOrigin: "top" }}
                   {...{ timeout: 1000 }}
                 >
-                  <Card direction="column" key={item.id}>
+                  <Card direction="column">
                     <Grid container spacing={2}>
                       <Grid item xs={12} sm container>
-                        {/* part on the left */}
                         <Grid item xs={3}>
                           <img src={item.album.images[0].url} />
                         </Grid>
-                        {/* part on the right */}
                         <Grid item xs={9}>
                           <div className="information__list">
                             <div className="songTexts__list">
@@ -66,7 +76,6 @@ const GeneratedList = () => {
                                 ))}
                               </Typography>
                             </div>
-                            {/* music player from material-ui-audio-player*/}
                             <div className="audioPlayer">
                               <AudioPlayer
                                 src={item.preview_url}
