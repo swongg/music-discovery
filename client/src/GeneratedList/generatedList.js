@@ -2,10 +2,15 @@ import React, { useState, useLayoutEffect, useEffect } from "react";
 import Title from "../UI/title";
 import "./generatedList.css";
 import Entity from "./entity";
+import Button from "@material-ui/core/Button";
 
 const GeneratedList = () => {
   const [username, setUsername] = useState();
   const [displayList, setDisplayList] = useState([]);
+
+  const backToMain = () => {
+    window.location.href = "./main";
+  };
 
   useEffect(() => {
     fetch("http://localhost:8888/user")
@@ -52,6 +57,14 @@ const GeneratedList = () => {
               ))}
             </div>
           )}
+          <Button
+            className="button-center-round"
+            variant="contained"
+            color="default"
+            onClick={backToMain}
+          >
+            Reselect
+          </Button>
         </div>
       </div>
     </div>
