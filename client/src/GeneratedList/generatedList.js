@@ -2,7 +2,7 @@ import React, { useState, useLayoutEffect, useEffect } from "react";
 import Title from "../UI/title";
 import AudioPlayer from "material-ui-audio-player";
 import "./generatedList.css";
-import { Card, Grid, Typography } from "@material-ui/core";
+import { Card, Grid, Typography, Grow } from "@material-ui/core";
 
 const GeneratedList = () => {
   const [username, setUsername] = useState();
@@ -16,7 +16,7 @@ const GeneratedList = () => {
         let username = userInfo.body.display_name;
         setUsername(username);
       });
-  });
+  }, []);
 
   useLayoutEffect(() => {
     fetch("http://localhost:8888/savedTracks")
@@ -26,7 +26,7 @@ const GeneratedList = () => {
         setSavedTracks(songs_);
         setDisplayList(songs_);
       });
-  });
+  }, []);
 
   return (
     <div className="default-background__generatedlist">
@@ -38,42 +38,48 @@ const GeneratedList = () => {
           {displayList && displayList.length > 0 && (
             <div className="recList">
               {displayList.map((item) => (
-                <Card direction="column" key={item.id}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm container>
-                      {/* part on the left */}
-                      <Grid item xs={3}>
-                        <img src={item.album.images[0].url} />
-                      </Grid>
-                      {/* part on the right */}
-                      <Grid item xs={9}>
-                        <div className="information__list">
-                          <div className="songTexts__list">
-                            <Typography className="songName__list">
-                              {item.name}
-                            </Typography>
-                            <Typography
-                              className="artistName__list"
-                              color="textSecondary"
-                            >
-                              {item.artists.map((artist) => (
-                                <span key={artist.id}>{artist.name} </span>
-                              ))}
-                            </Typography>
+                <Grow
+                  in={true}
+                  style={{ transformOrigin: "top" }}
+                  {...{ timeout: 1000 }}
+                >
+                  <Card direction="column" key={item.id}>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sm container>
+                        {/* part on the left */}
+                        <Grid item xs={3}>
+                          <img src={item.album.images[0].url} />
+                        </Grid>
+                        {/* part on the right */}
+                        <Grid item xs={9}>
+                          <div className="information__list">
+                            <div className="songTexts__list">
+                              <Typography className="songName__list">
+                                {item.name}
+                              </Typography>
+                              <Typography
+                                className="artistName__list"
+                                color="textSecondary"
+                              >
+                                {item.artists.map((artist) => (
+                                  <span key={artist.id}>{artist.name} </span>
+                                ))}
+                              </Typography>
+                            </div>
+                            {/* music player from material-ui-audio-player*/}
+                            <div className="audioPlayer">
+                              <AudioPlayer
+                                src={item.preview_url}
+                                width="220px"
+                                volume={false}
+                              ></AudioPlayer>
+                            </div>
                           </div>
-                          {/* music player from material-ui-audio-player*/}
-                          <div className="audioPlayer">
-                            <AudioPlayer
-                              src={item.preview_url}
-                              width="220px"
-                              volume={false}
-                            ></AudioPlayer>
-                          </div>
-                        </div>
+                        </Grid>
                       </Grid>
                     </Grid>
-                  </Grid>
-                </Card>
+                  </Card>
+                </Grow>
               ))}
             </div>
           )}
