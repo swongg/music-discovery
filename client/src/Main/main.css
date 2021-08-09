@@ -20,13 +20,6 @@
   transform: translate(-50%, 0%);
 }
 
-.button-center-round {
-  margin-top: 30px !important;
-  border-radius: 20px !important;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
 .filter__main {
   margin-top: 20px;
 }
@@ -68,7 +61,14 @@
 }
 
 img {
-
   height: 250px;
-  width:250px;
+  width: 250px;
+}
+
+.button-center-round {
+  position: absolute !important;
+  margin-top: 30px !important;
+  border-radius: 20px !important;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

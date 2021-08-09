@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Title from "../UI/title";
 import "./main.css";
-import { Paper, Tabs, Tab } from "@material-ui/core";
+import { Button, Paper, Tabs, Tab } from "@material-ui/core";
 
 const options = {
   TOPTRACKS_: 0,
@@ -89,6 +89,10 @@ const Main = () => {
               <Tab label="Liked Songs" />
             </Tabs>
           </Paper>
+          <Button className="button-center-round" variant="contained">
+            Generate
+          </Button>
+          <br></br> <br></br>
           <br></br> <br></br>
           {displayList && displayList.length > 0 && (
             <div>
