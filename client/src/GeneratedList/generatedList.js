@@ -2,13 +2,17 @@ import React, { useState, useLayoutEffect, useEffect } from "react";
 import Title from "../UI/title";
 import "./generatedList.css";
 import Entity from "./entity";
-import Button from "@material-ui/core/Button";
+import { Button, ButtonGroup } from "@material-ui/core/";
+
+const refreshPage = () => {
+  window.location.reload();
+};
 
 const GeneratedList = () => {
   const [username, setUsername] = useState();
   const [displayList, setDisplayList] = useState([]);
 
-  const backToMain = () => {
+  const goToMainPage = () => {
     window.location.href = "./main";
   };
 
@@ -21,7 +25,6 @@ const GeneratedList = () => {
       });
   }, []);
 
-  // this is so nast
   useEffect(() => {
     fetch("http://localhost:8888/savedTracks/?num=5")
       .then((response) => response.json())
@@ -50,6 +53,23 @@ const GeneratedList = () => {
           {username && (
             <Title content="Recommended List for" user={username} type="main" />
           )}
+          <br></br>
+          <ButtonGroup
+            color="primary"
+            aria-label="outlined primary button group"
+          >
+            <Button variant="contained" color="default" onClick={refreshPage}>
+              Re-make
+            </Button>
+            <br></br>
+
+            <Button variant="contained" color="default" onClick={goToMainPage}>
+              Back
+            </Button>
+          </ButtonGroup>
+
+          <br></br>
+
           {displayList && displayList.length > 0 && (
             <div className="recList">
               {displayList.map((item) => (
@@ -57,14 +77,6 @@ const GeneratedList = () => {
               ))}
             </div>
           )}
-          <Button
-            className="button-center-round"
-            variant="contained"
-            color="default"
-            onClick={backToMain}
-          >
-            Reselect
-          </Button>
         </div>
       </div>
     </div>
