@@ -45,6 +45,7 @@ app.get("/auth", (req, res) => {
     "user-library-read playlist-modify-public",
     "playlist-modify-private",
     "playlist-read-private",
+    "user-library-modify",
   ];
 
   // Setting credentials can be done in the wrapper's constructor, or using the API object's setters.
@@ -93,8 +94,11 @@ app.get("/toptracks", (req, res) => {
 });
 
 app.get("/savedtracks", (req, res) => {
+  let num = req.query.num;
   spotifyApi
-    .getMySavedTracks()
+    .getMySavedTracks({
+      limit: num,
+    })
     .then((lists) => {
       res.json(lists);
     })
@@ -119,6 +123,52 @@ app.get("/user", (req, res) => {
     .getMe()
     .then((userProfile) => {
       res.json(userProfile);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+app.get("/recommendations", (req, res) => {
+  let seeds = req.query.seeds.split(",");
+  spotifyApi
+    .getRecommendations({
+      min_energy: 0.4,
+      seed_tracks: seeds,
+      min_popularity: 50,
+    })
+    .then((recommendations) => {
+      res.json(recommendations);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+app.put("/savetrack", (req, res) => {
+  let param = [];
+  let id = req.query.id.toString();
+  param.push(id);
+  let obj = { ids: param };
+  spotifyApi
+    .addToMySavedTracks(obj.ids)
+    .then(function (data) {
+      res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+app.put("/removetrack", (req, res) => {
+  let param = [];
+  let id = req.query.id.toString();
+  param.push(id);
+  let obj = { ids: param };
+  spotifyApi
+    .removeFromMySavedTracks(obj.ids)
+    .then(function (data) {
+      res.json(data);
     })
     .catch((err) => {
       console.log(err);

@@ -1,10 +1,5 @@
 .default-background__generatedlist {
-  background: rgb(2, 128, 144);
-  background: linear-gradient(
-    180deg,
-    rgba(2, 128, 144, 0.8) 0%,
-    rgba(2, 195, 154, 0.7) 100%
-  );
+  background: linear-gradient(-45deg, #05668d, #028090, #00a896);
 }
 
 .center-outer__generatedlist {
@@ -35,11 +30,11 @@
   font-size: 36px;
 }
 
-img {
-  border-radius: 10px;
-  max-width: 100px;
-  height: auto;
-  padding: 10px 0px;
+.recList img {
+  float: left;
+  max-height: 125px;
+  max-width: 125px;
+  width: auto;
 }
 
 .MuiCard-root {
@@ -47,33 +42,88 @@ img {
 }
 
 .information__list {
-  padding: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 .information__list p {
-  text-align: left;
+  text-align: center;
+  color: rgba(220, 220, 220, 1) !important;
 }
 
 .recList {
   margin-top: 20px;
+  max-width: 500px;
+  min-width: 300px;
 }
 
 .recList > .MuiPaper-root {
   background-color: rgba(255, 255, 255, 0.3) !important;
-  max-height: 150px;
-}
-.audioPlayer {
-  float: right;
+  background: rgb(39, 35, 38);
+  background: linear-gradient(
+    180deg,
+    rgba(39, 35, 38, 1) 0%,
+    rgba(40, 41, 44, 1) 100%
+  ) !important;
+  max-height: 125px;
 }
 
-.audioPlayer div {
+.songName__list {
+  font-size: 0.9rem !important;
+}
+
+.artistName__list {
+  margin-top: 5px !important;
+  font-size: 11px !important;
+}
+
+.songTexts__list {
+  margin-top: 20px;
+  margin-left: -10px;
+}
+
+.audioPlayer {
+  margin-top: 15px;
+  margin-left: 55px;
+  text-align: center;
+}
+
+.audioPlayer .MuiPaper-root {
   box-shadow: none !important;
   background-color: transparent !important;
 }
 
 .audioPlayer .MuiTypography-body1 {
-  display: none;
+  /* display: none; */
+  margin-top: 7px;
+  font-size: 11px !important;
+}
+
+.recList .MuiSlider-colorPrimary {
+  color: rgb(2, 144, 142) !important;
+}
+
+.recList svg {
+  color: rgb(90, 90, 90) !important;
+  font-size: 1.5rem !important;
 }
 
 .audioPlayer .MuiSvgIcon-root:hover {
-  color: rgba(0, 0, 0, 0.3) !important;
+  color: rgba(80, 80, 80, 1) !important;
+}
+
+.audioPlayer .MuiGrid-item {
+  padding: 8px !important;
+}
+
+.likeButton__list {
+  display: inline-block;
+  margin-top: 5px;
+  margin-left: -90px;
+}
+
+.likeButton__list div {
+  width: 80px;
+  height: 80px;
+  background-position-y: -18px !important;
+  box-shadow: inset 0 0 0 2000px rgb(40 41 44 / 35%);
 }
