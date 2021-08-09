@@ -8,6 +8,22 @@ const options = {
   SAVEDTRACKS_: 1,
 };
 
+let myAudio = new Audio();
+
+let setAndPlayAudio = (songPreview) => {
+  console.log(songPreview);
+  myAudio = new Audio(songPreview);
+
+  myAudio.play().catch((err) => {
+    console.log(err);
+  });
+};
+
+let pauseAudio = () => {
+  myAudio.pause();
+  myAudio.currentTime = 0;
+};
+
 const Main = () => {
   const [username, setUsername] = useState();
   const [topSongs, setTopSongs] = useState();
@@ -29,9 +45,7 @@ const Main = () => {
       setUsername(username);
       setTopSongs(topTracks);
       setSavedTracks(savedTracks);
-      setTimeout(function () {
-        setDisplayList(topTracks);
-      });
+      setTimeout(() => setDisplayList(topTracks));
     } else {
       Promise.all([
         fetch(serverUri + "user").then((res) => res.json()),
@@ -57,6 +71,7 @@ const Main = () => {
     } else if (option === options.SAVEDTRACKS_ && savedTracks) {
       setDisplayList(savedTracks);
     }
+    console.log(displayList);
   }, [option]);
 
   const optionChange = (event, newOption) => {
@@ -74,10 +89,18 @@ const Main = () => {
               <Tab label="Liked Songs" />
             </Tabs>
           </Paper>
+          <br></br> <br></br>
           {displayList && displayList.length > 0 && (
             <div>
               {displayList.map((item) => (
-                <div key={item.id}>{item.name}</div>
+                <div key={item.id}>
+                  <img
+                    className="albumPhoto"
+                    src={item.album.images[0].url}
+                    onMouseOver={() => setAndPlayAudio(item.preview_url)}
+                    onMouseOut={() => pauseAudio()}
+                  />
+                </div>
               ))}
             </div>
           )}

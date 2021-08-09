@@ -16,8 +16,7 @@ const Landing = () => {
         <div className="center-inner__landing">
           <Title content="Music Discovery" type="main" />
           <Title
-            content="Neque po????rro quisquam est qui dolorem ipsum quia dolo sit amet,
-        consectetur, adipsci velit"
+            content="discover music at your finger tips . . ."
             type="sub"
           />
           <Button
