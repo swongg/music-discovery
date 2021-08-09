@@ -8,6 +8,22 @@ const options = {
   SAVEDTRACKS_: 1,
 };
 
+let myAudio = new Audio();
+
+let setAndPlayAudio = (songPreview) => {
+  console.log(songPreview);
+  myAudio = new Audio(songPreview);
+
+  myAudio.play().catch((err) => {
+    console.log(err);
+  });
+};
+
+let pauseAudio = () => {
+  myAudio.pause();
+  myAudio.currentTime = 0;
+};
+
 const Main = () => {
   const [username, setUsername] = useState();
   const [topSongs, setTopSongs] = useState();
@@ -78,7 +94,12 @@ const Main = () => {
             <div>
               {displayList.map((item) => (
                 <div key={item.id}>
-                  <img className="albumPhoto" src={item.album.images[0].url} />
+                  <img
+                    className="albumPhoto"
+                    src={item.album.images[0].url}
+                    onMouseOver={() => setAndPlayAudio(item.preview_url)}
+                    onMouseOut={() => pauseAudio()}
+                  />
                 </div>
               ))}
             </div>
