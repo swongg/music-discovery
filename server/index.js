@@ -98,7 +98,6 @@ app.get("/toptracks", (req, res) => {
 
 app.get("/savedtracks", (req, res) => {
   let num = 50;
-  console.log("executed");
   if (req.query.num) num = req.query.num;
   spotifyApi
     .getMySavedTracks({
