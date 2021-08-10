@@ -2,7 +2,19 @@ import React, { useState, useEffect } from "react";
 import Title from "../UI/title";
 import Track from "./track";
 import "./main.css";
-import { Button, Paper, Tabs, Tab, Grid } from "@material-ui/core";
+
+import {
+  Paper,
+  Tabs,
+  Tab,
+  Grid,
+  Button,
+  MenuItem,
+  FormHelperText,
+  FormControl,
+  Select,
+} from "@material-ui/core";
+
 
 const options = {
   TOPTRACKS_: 0,
@@ -14,14 +26,26 @@ window.onunload = function () {
 };
 
 const Main = () => {
+  const [seedList, setSeedList] = useState([]);
   const [username, setUsername] = useState();
   const [topSongs, setTopSongs] = useState();
   let [savedTracks, setSavedTracks] = useState();
   let serverUri = "http://localhost:8888/";
   let clientUri = "http://localhost:3000/";
+  const [num, setNum] = React.useState(5);
 
   const [option, setOption] = useState(options.TOPTRACKS_);
   const [displayList, setDisplayList] = useState([]);
+
+  const updateSeedList = (seed) => {
+    setSeedList(seed);
+  };
+
+  const handleNumChange = (event) => {
+    setNum(event.target.value);
+  };
+
+  useEffect(() => {}, [seedList]);
 
   useEffect(() => {
     if (
@@ -68,8 +92,15 @@ const Main = () => {
     setOption(newOption);
   };
 
-  const generateSongs = (option) =>
-    (window.location.href = clientUri + "generatelist" + "/?option=" + option);
+  const generateSongs = (seeds, option) => {
+    if (!seeds) {
+      window.location.href =
+        clientUri + "generatelist" + "/?option=" + option + "&nol=" + num;
+    } else {
+      window.location.href =
+        clientUri + "generatelist" + "/?seeds=" + seeds + "&nol=" + num;
+    }
+  };
 
   return (
     <div className="default-background__main">
@@ -82,21 +113,40 @@ const Main = () => {
               <Tab label="Liked Songs" />
             </Tabs>
           </Paper>
-          <Button
-            className="button-center-round"
-            variant="contained"
-            onClick={() => generateSongs(option)}
-          >
-            Generate
-          </Button>
-          <br></br> <br></br>
-          <br></br> <br></br>
+
+          <div className="text__main">
+            <span className="title">
+              You've currently selected {seedList.length} songs
+            </span>
+
+            <FormControl>
+              <Select value={num} onChange={handleNumChange}>
+                <MenuItem value={5}>5</MenuItem>
+                <MenuItem value={10}>10</MenuItem>
+                <MenuItem value={20}>20</MenuItem>
+              </Select>
+              <FormHelperText>Number of tracks to generate</FormHelperText>
+            </FormControl>
+            <Button
+              className="button-center-round__main"
+              variant="contained"
+              onClick={() => generateSongs(seedList, option)}
+            >
+              Generate
+            </Button>
+          </div>
+
           {displayList && displayList.length > 0 && (
-            <div>
+            <div className="library__main">
               <Grid container spacing={1}>
                 <Grid item xs={12} sm container>
                   {displayList.map((item) => (
-                    <Track key={item.id} item={item}></Track>
+                    <Track
+                      key={item.id}
+                      item={item}
+                      seedList={seedList}
+                      triggerParentUpdate={updateSeedList}
+                    ></Track>
                   ))}
                 </Grid>
               </Grid>

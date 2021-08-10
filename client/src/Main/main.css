@@ -15,7 +15,7 @@
 
 .center-inner__main {
   position: absolute;
-  top: 100px;
+  top: 60px;
   left: 50%;
   transform: translate(-50%, 0%);
 }
@@ -33,8 +33,12 @@
   box-shadow: none !important;
 }
 
-.Mui-selected {
+/* .Mui-selected {
   color: white !important;
+} */
+
+.num_of_songs .Mui-selected {
+  color: rgba(5, 102, 141, 0.6) !important;
 }
 
 .MuiTabs-indicator {
@@ -87,5 +91,51 @@ img.color {
   color: white;
   font-size: 3rem;
   stroke: white;
+}
 
+.library__main {
+  position: relative;
+  top: 30px;
+  display: block;
+}
+
+.text__main {
+  position: relative;
+  top: 15px;
+  bottom: 20px;
+  display: block;
+}
+
+.text__main .MuiFormHelperText-root {
+  color: white;
+}
+
+.text__main .MuiInput-underline {
+  border-bottom: white !important;
+}
+
+.text__main .title {
+  font-size: 0.8rem;
+  margin-right: 20px;
+}
+
+.button-center-round__main {
+  margin-left: 20px !important;
+}
+
+.MuiInput-input {
+  color: white !important;
+  font-weight: 100 !important;
+}
+
+.MuiInput-underline:before {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.8) !important;
+}
+
+.MuiInput-underline:after {
+  border-bottom: 2px solid rgba(255, 255, 255, 0.5) !important;
+}
+
+.text__main .MuiSelect-icon {
+  color: rgba(255, 255, 255, 0.5);
 }

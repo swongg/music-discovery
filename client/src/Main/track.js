@@ -38,9 +38,20 @@ const Track = (props) => {
 
   const selectSong = () => {
     setSelected(!isSelected);
+
     setTimeout(() => {
-      myAudio.pause();
-    }, 1000);
+      if (!isSelected == true) {
+        let s = props.seedList;
+        s.push(item.id);
+        s = s.filter((e) => e !== "");
+        props.triggerParentUpdate(s);
+      }
+      if (!isSelected == false) {
+        let s = props.seedList;
+        s = s.filter((e) => e !== item.id);
+        props.triggerParentUpdate(s);
+      }
+    }, 0);
   };
 
   return (

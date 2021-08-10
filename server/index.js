@@ -135,8 +135,10 @@ app.get("/user", (req, res) => {
 
 app.get("/recommendations", (req, res) => {
   let seeds = req.query.seeds.split(",");
+  let nol = req.query.nol;
   spotifyApi
     .getRecommendations({
+      limit: nol,
       min_energy: 0.4,
       seed_tracks: seeds,
       min_popularity: 50,
