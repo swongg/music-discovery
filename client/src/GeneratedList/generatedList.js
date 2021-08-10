@@ -7,6 +7,7 @@ import { Button, ButtonGroup } from "@material-ui/core/";
 const url = new URL(window.location.href);
 let option = url.searchParams.get("option");
 let seeds_main = url.searchParams.get("seeds");
+let nol = url.searchParams.get("nol");
 
 const options = {
   TOPTRACKS_: 0,
@@ -72,18 +73,21 @@ const GeneratedList = () => {
           let seeds = createRecommendationSeeds(songs, fetchOptionArg);
 
           setTimeout(() => {
-            fetch(`http://localhost:8888/recommendations/?seeds=${seeds}`)
+            fetch(
+              `http://localhost:8888/recommendations/?seeds=${seeds}&nol=${nol}`
+            )
               .then((response) => response.json())
               .then((songs) => {
                 let songs_ = songs.body.tracks;
                 setDisplayList(songs_);
-                console.log(songs_);
               });
           }, 1);
         });
     } else {
       setTimeout(() => {
-        fetch(`http://localhost:8888/recommendations/?seeds=${seeds_main}`)
+        fetch(
+          `http://localhost:8888/recommendations/?seeds=${seeds_main}&nol=${nol}`
+        )
           .then((response) => response.json())
           .then((songs) => {
             let songs_ = songs.body.tracks;
@@ -93,9 +97,19 @@ const GeneratedList = () => {
     }
   }, []);
 
+  const backgroundSize = {
+    height: "150vh",
+  };
+  if (nol == 10) {
+    backgroundSize.height = "230vh";
+  }
+  if (nol == 20) {
+    backgroundSize.height = "450vh";
+  }
+
   return (
     <div className="default-background__generatedlist">
-      <div className="center-outer__generatedlist">
+      <div className="center-outer__generatedlist" style={backgroundSize}>
         <div className="center-inner__generatedlist">
           {username && (
             <Title content="Recommended List for" user={username} type="main" />

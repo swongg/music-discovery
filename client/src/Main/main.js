@@ -2,7 +2,17 @@ import React, { useState, useEffect } from "react";
 import Title from "../UI/title";
 import Track from "./track";
 import "./main.css";
-import { Paper, Tabs, Tab, Grid, Button } from "@material-ui/core";
+import {
+  Paper,
+  Tabs,
+  Tab,
+  Grid,
+  Button,
+  MenuItem,
+  FormHelperText,
+  FormControl,
+  Select,
+} from "@material-ui/core";
 
 const options = {
   TOPTRACKS_: 0,
@@ -16,13 +26,17 @@ const Main = () => {
   let [savedTracks, setSavedTracks] = useState();
   let serverUri = "http://localhost:8888/";
   let clientUri = "http://localhost:3000/";
+  const [num, setNum] = React.useState(5);
 
   const [option, setOption] = useState(options.TOPTRACKS_);
   const [displayList, setDisplayList] = useState([]);
 
   const updateSeedList = (seed) => {
-    console.log(seed);
     setSeedList(seed);
+  };
+
+  const handleNumChange = (event) => {
+    setNum(event.target.value);
   };
 
   useEffect(() => {}, [seedList]);
@@ -65,7 +79,6 @@ const Main = () => {
     } else if (option === options.SAVEDTRACKS_ && savedTracks) {
       setDisplayList(savedTracks);
     }
-    console.log(displayList);
   }, [option]);
 
   const optionChange = (event, newOption) => {
@@ -74,9 +87,11 @@ const Main = () => {
 
   const generateSongs = (seeds, option) => {
     if (!seeds) {
-      window.location.href = clientUri + "generatelist" + "/?option=" + option;
+      window.location.href =
+        clientUri + "generatelist" + "/?option=" + option + "&nol=" + num;
     } else {
-      window.location.href = clientUri + "generatelist" + "/?seeds=" + seeds;
+      window.location.href =
+        clientUri + "generatelist" + "/?seeds=" + seeds + "&nol=" + num;
     }
   };
 
@@ -96,6 +111,15 @@ const Main = () => {
             <span className="title">
               You've currently selected {seedList.length} songs
             </span>
+
+            <FormControl>
+              <Select value={num} onChange={handleNumChange}>
+                <MenuItem value={5}>5</MenuItem>
+                <MenuItem value={10}>10</MenuItem>
+                <MenuItem value={20}>20</MenuItem>
+              </Select>
+              <FormHelperText>Number of tracks to generate</FormHelperText>
+            </FormControl>
             <Button
               className="button-center-round__main"
               variant="contained"
