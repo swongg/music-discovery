@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Title from "../UI/title";
 import "./generatedList.css";
 import Entity from "./entity";
@@ -12,7 +12,18 @@ const options = {
   SAVEDTRACKS_: 1,
 };
 
-
+let createOptionArgForFetch = () => {
+  let fetchArg;
+  switch (+option) {
+    case options.TOPTRACKS_:
+      fetchArg = "toptracks";
+      break;
+    case options.SAVEDTRACKS_:
+      fetchArg = "savedtracks";
+      break;
+  }
+  return fetchArg;
+};
 
 const refreshPage = () => {
   window.location.reload();
@@ -36,23 +47,26 @@ const GeneratedList = () => {
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:8888/savedtracks/?num=5")
+    let fetchArg = createOptionArgForFetch();
+
+    fetch("http://localhost:8888/" + fetchArg + "/?num=5")
       .then((response) => response.json())
       .then((songs) => {
-        let seeds = "";
-        let songs_ = songs.body.items.map((t) => t.track);
-        for (let song of songs_) {
-          seeds = seeds + "," + song.id;
-        }
-        seeds = seeds.substring(1);
-        setTimeout(() => {
-          fetch(`http://localhost:8888/recommendations/?seeds=${seeds}`)
-            .then((response) => response.json())
-            .then((songs) => {
-              let songs_ = songs.body.tracks;
-              setDisplayList(songs_);
-            });
-        }, 1);
+        console.log(songs);
+        //   let seeds = "";
+        //   let songs_ = songs.body.items.map((t) => t.track);
+        //   for (let song of songs_) {
+        //     seeds = seeds + "," + song.id;
+        //   }
+        //   seeds = seeds.substring(1);
+        //   setTimeout(() => {
+        //     fetch(`http://localhost:8888/recommendations/?seeds=${seeds}`)
+        //       .then((response) => response.json())
+        //       .then((songs) => {
+        //         let songs_ = songs.body.tracks;
+        //         setDisplayList(songs_);
+        //       });
+        //   }, 1);
       });
   }, []);
 

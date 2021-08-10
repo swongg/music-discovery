@@ -88,8 +88,8 @@ app.get("/toptracks", (req, res) => {
     .getMyTopTracks({
       limit: num,
     })
-    .then((tracks) => {
-      res.json(tracks);
+    .then((topTracks) => {
+      res.json(topTracks);
     })
     .catch((err) => {
       console.log(err);
@@ -102,8 +102,8 @@ app.get("/savedtracks", (req, res) => {
     .getMySavedTracks({
       limit: num,
     })
-    .then((lists) => {
-      res.json(lists);
+    .then((savedTracks) => {
+      res.json(savedTracks);
     })
     .catch((err) => {
       console.log(err);
