@@ -4,6 +4,16 @@ import "./generatedList.css";
 import Entity from "./entity";
 import { Button, ButtonGroup } from "@material-ui/core/";
 
+const url = new URL(window.location.href);
+let option = url.searchParams.get("option");
+
+const options = {
+  TOPTRACKS_: 0,
+  SAVEDTRACKS_: 1,
+};
+
+
+
 const refreshPage = () => {
   window.location.reload();
 };
@@ -13,7 +23,7 @@ const GeneratedList = () => {
   const [displayList, setDisplayList] = useState([]);
 
   const goToMainPage = () => {
-    window.location.href = "./main";
+    window.location.href = "http://localhost:3000/main";
   };
 
   useEffect(() => {
@@ -26,13 +36,13 @@ const GeneratedList = () => {
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:8888/savedTracks/?num=5")
+    fetch("http://localhost:8888/savedtracks/?num=5")
       .then((response) => response.json())
       .then((songs) => {
         let seeds = "";
         let songs_ = songs.body.items.map((t) => t.track);
-        for (let s of songs_) {
-          seeds = seeds + "," + s.id;
+        for (let song of songs_) {
+          seeds = seeds + "," + song.id;
         }
         seeds = seeds.substring(1);
         setTimeout(() => {

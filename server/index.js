@@ -83,8 +83,11 @@ app.get("/callback", (req, res) => {
 });
 
 app.get("/toptracks", (req, res) => {
+  let num = req.query.num;
   spotifyApi
-    .getMyTopTracks()
+    .getMyTopTracks({
+      limit: num,
+    })
     .then((tracks) => {
       res.json(tracks);
     })

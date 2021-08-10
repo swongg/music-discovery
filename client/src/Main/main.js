@@ -79,8 +79,8 @@ const Main = () => {
     setOption(newOption);
   };
 
-  const generateSongs = () =>
-    (window.location.href = clientUri + "generatelist");
+  const generateSongs = (option) =>
+    (window.location.href = clientUri + "generatelist" + "/?option=" + option);
 
   return (
     <div className="default-background__main">
@@ -96,7 +96,7 @@ const Main = () => {
           <Button
             className="button-center-round"
             variant="contained"
-            onClick={generateSongs}
+            onClick={() => generateSongs(option)}
           >
             Generate
           </Button>
