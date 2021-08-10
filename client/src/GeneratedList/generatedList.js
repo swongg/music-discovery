@@ -13,16 +13,31 @@ const options = {
 };
 
 let createOptionArgForFetch = () => {
-  let fetchArg;
+  let fetchOptionArg;
   switch (+option) {
     case options.TOPTRACKS_:
-      fetchArg = "toptracks";
+      fetchOptionArg = "toptracks";
       break;
     case options.SAVEDTRACKS_:
-      fetchArg = "savedtracks";
+      fetchOptionArg = "savedtracks";
       break;
   }
-  return fetchArg;
+  return fetchOptionArg;
+};
+
+let createRecommendationSeeds = (songs, option) => {
+  let seeds = "";
+  let songs_;
+  if (option == "toptracks") {
+    songs_ = songs.body.items;
+  } else if (option == "savedtracks") {
+    songs_ = songs.body.items.map((t) => t.track);
+  }
+  for (let song of songs_) {
+    seeds = seeds + "," + song.id;
+  }
+  seeds = seeds.substring(1);
+  return seeds;
 };
 
 const refreshPage = () => {
@@ -47,26 +62,21 @@ const GeneratedList = () => {
   }, []);
 
   useEffect(() => {
-    let fetchArg = createOptionArgForFetch();
+    let fetchOptionArg = createOptionArgForFetch();
 
-    fetch("http://localhost:8888/" + fetchArg + "/?num=5")
+    fetch("http://localhost:8888/" + fetchOptionArg + "/?num=5")
       .then((response) => response.json())
       .then((songs) => {
-        console.log(songs);
-        //   let seeds = "";
-        //   let songs_ = songs.body.items.map((t) => t.track);
-        //   for (let song of songs_) {
-        //     seeds = seeds + "," + song.id;
-        //   }
-        //   seeds = seeds.substring(1);
-        //   setTimeout(() => {
-        //     fetch(`http://localhost:8888/recommendations/?seeds=${seeds}`)
-        //       .then((response) => response.json())
-        //       .then((songs) => {
-        //         let songs_ = songs.body.tracks;
-        //         setDisplayList(songs_);
-        //       });
-        //   }, 1);
+        let seeds = createRecommendationSeeds(songs, fetchOptionArg);
+
+        setTimeout(() => {
+          fetch(`http://localhost:8888/recommendations/?seeds=${seeds}`)
+            .then((response) => response.json())
+            .then((songs) => {
+              let songs_ = songs.body.tracks;
+              setDisplayList(songs_);
+            });
+        }, 1);
       });
   }, []);
 
