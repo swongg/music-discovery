@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
-import Title from "../UI/title";
+import React, { useState, useMemo } from "react";
 import "./main.css";
 import { Grid, Tooltip } from "@material-ui/core";
 import CheckIcon from "@material-ui/icons/Check";
@@ -40,17 +39,15 @@ const Track = (props) => {
     setSelected(!isSelected);
 
     setTimeout(() => {
+      let seedList = props.seedList;
       if (!isSelected == true) {
-        let s = props.seedList;
-        s.push(item.id);
-        s = s.filter((e) => e !== "");
-        props.triggerParentUpdate(s);
+        seedList.push(item.id);
+        seedList = seedList.filter((element) => element !== "");
       }
       if (!isSelected == false) {
-        let s = props.seedList;
-        s = s.filter((e) => e !== item.id);
-        props.triggerParentUpdate(s);
+        seedList = seedList.filter((element) => element !== item.id);
       }
+      props.triggerParentUpdate(seedList);
     }, 0);
   };
 

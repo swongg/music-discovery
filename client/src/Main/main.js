@@ -32,7 +32,7 @@ const Main = () => {
   let [savedTracks, setSavedTracks] = useState();
   let serverUri = "http://localhost:8888/";
   let clientUri = "http://localhost:3000/";
-  const [num, setNum] = React.useState(5);
+  const [numOfSongs, setNumOfSongs] = React.useState(5);
 
   const [option, setOption] = useState(options.TOPTRACKS_);
   const [displayList, setDisplayList] = useState([]);
@@ -41,8 +41,8 @@ const Main = () => {
     setSeedList(seed);
   };
 
-  const handleNumChange = (event) => {
-    setNum(event.target.value);
+  const handleNumOfSongsChange = (event) => {
+    setNumOfSongs(event.target.value);
   };
 
   useEffect(() => {}, [seedList]);
@@ -95,10 +95,10 @@ const Main = () => {
   const generateSongs = (seeds, option) => {
     if (!seeds) {
       window.location.href =
-        clientUri + "generatelist" + "/?option=" + option + "&nol=" + num;
+        clientUri + "generatelist" + "/?option=" + option + "&nol=" + numOfSongs;
     } else {
       window.location.href =
-        clientUri + "generatelist" + "/?seeds=" + seeds + "&nol=" + num;
+        clientUri + "generatelist" + "/?seeds=" + seeds + "&nol=" + numOfSongs;
     }
   };
 
@@ -120,7 +120,7 @@ const Main = () => {
             </span>
 
             <FormControl>
-              <Select value={num} onChange={handleNumChange}>
+              <Select value={numOfSongs} onChange={handleNumOfSongsChange}>
                 <MenuItem value={5}>5</MenuItem>
                 <MenuItem value={10}>10</MenuItem>
                 <MenuItem value={20}>20</MenuItem>
