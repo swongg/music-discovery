@@ -6,6 +6,7 @@ import { Button, ButtonGroup } from "@material-ui/core/";
 
 const url = new URL(window.location.href);
 let option = url.searchParams.get("option");
+let seeds_main = url.searchParams.get("seeds");
 
 const options = {
   TOPTRACKS_: 0,
@@ -62,22 +63,34 @@ const GeneratedList = () => {
   }, []);
 
   useEffect(() => {
-    let fetchOptionArg = createOptionArgForFetch();
+    if (!seeds_main) {
+      let fetchOptionArg = createOptionArgForFetch();
 
-    fetch("http://localhost:8888/" + fetchOptionArg + "/?num=5")
-      .then((response) => response.json())
-      .then((songs) => {
-        let seeds = createRecommendationSeeds(songs, fetchOptionArg);
+      fetch("http://localhost:8888/" + fetchOptionArg + "/?num=5")
+        .then((response) => response.json())
+        .then((songs) => {
+          let seeds = createRecommendationSeeds(songs, fetchOptionArg);
 
-        setTimeout(() => {
-          fetch(`http://localhost:8888/recommendations/?seeds=${seeds}`)
-            .then((response) => response.json())
-            .then((songs) => {
-              let songs_ = songs.body.tracks;
-              setDisplayList(songs_);
-            });
-        }, 1);
-      });
+          setTimeout(() => {
+            fetch(`http://localhost:8888/recommendations/?seeds=${seeds}`)
+              .then((response) => response.json())
+              .then((songs) => {
+                let songs_ = songs.body.tracks;
+                setDisplayList(songs_);
+                console.log(songs_);
+              });
+          }, 1);
+        });
+    } else {
+      setTimeout(() => {
+        fetch(`http://localhost:8888/recommendations/?seeds=${seeds_main}`)
+          .then((response) => response.json())
+          .then((songs) => {
+            let songs_ = songs.body.tracks;
+            setDisplayList(songs_);
+          });
+      }, 1);
+    }
   }, []);
 
   return (

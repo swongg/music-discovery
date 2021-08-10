@@ -15,7 +15,7 @@
 
 .center-inner__main {
   position: absolute;
-  top: 100px;
+  top: 60px;
   left: 50%;
   transform: translate(-50%, 0%);
 }
@@ -87,5 +87,22 @@ img.color {
   color: white;
   font-size: 3rem;
   stroke: white;
+}
 
+.library__main {
+  position: relative;
+  top: 30px;
+  display: block;
+}
+
+.text__main {
+  position: relative;
+  top: 15px;
+  bottom: 20px;
+  display: block;
+}
+
+.text__main .title {
+  font-size: 0.8rem;
+  margin-right: 20px;
 }
