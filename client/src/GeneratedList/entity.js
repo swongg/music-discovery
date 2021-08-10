@@ -12,7 +12,6 @@ const Entity = (props) => {
   };
 
   useEffect(() => {
-    console.log(isClick);
     if (isClick === true) {
       const requestOptions = {
         method: "PUT",

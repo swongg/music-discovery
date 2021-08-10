@@ -14,6 +14,7 @@ const Main = () => {
   const [topSongs, setTopSongs] = useState();
   let [savedTracks, setSavedTracks] = useState();
   let serverUri = "http://localhost:8888/";
+  let clientUri = "http://localhost:3000/";
 
   const [option, setOption] = useState(options.TOPTRACKS_);
   const [displayList, setDisplayList] = useState([]);
@@ -63,6 +64,9 @@ const Main = () => {
     setOption(newOption);
   };
 
+  const generateSongs = (option) =>
+    (window.location.href = clientUri + "generatelist" + "/?option=" + option);
+
   return (
     <div className="default-background__main">
       <div className="center-outer__main">
@@ -74,6 +78,14 @@ const Main = () => {
               <Tab label="Liked Songs" />
             </Tabs>
           </Paper>
+          <Button
+            className="button-center-round"
+            variant="contained"
+            onClick={() => generateSongs(option)}
+          >
+            Generate
+          </Button>
+          <br></br> <br></br>
           <br></br> <br></br>
           {displayList && displayList.length > 0 && (
             <div>

@@ -12,7 +12,7 @@ function App() {
         <Switch>
           <Route path="/" exact component={Landing} />
           <Route path="/main" component={Main} />
-          <Route path="/generatedList" component={GeneratedList} />
+          <Route path="/generatelist" component={GeneratedList} />
         </Switch>
       </div>
     </Router>
