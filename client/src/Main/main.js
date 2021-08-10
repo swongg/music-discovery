@@ -1,27 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Title from "../UI/title";
+import Track from "./track";
 import "./main.css";
-import { Paper, Tabs, Tab } from "@material-ui/core";
+import { Paper, Tabs, Tab, Grid, Tooltip } from "@material-ui/core";
 
 const options = {
   TOPTRACKS_: 0,
   SAVEDTRACKS_: 1,
-};
-
-let myAudio = new Audio();
-
-let setAndPlayAudio = (songPreview) => {
-  console.log(songPreview);
-  myAudio = new Audio(songPreview);
-
-  myAudio.play().catch((err) => {
-    console.log(err);
-  });
-};
-
-let pauseAudio = () => {
-  myAudio.pause();
-  myAudio.currentTime = 0;
 };
 
 const Main = () => {
@@ -92,16 +77,13 @@ const Main = () => {
           <br></br> <br></br>
           {displayList && displayList.length > 0 && (
             <div>
-              {displayList.map((item) => (
-                <div key={item.id}>
-                  <img
-                    className="albumPhoto"
-                    src={item.album.images[0].url}
-                    onMouseOver={() => setAndPlayAudio(item.preview_url)}
-                    onMouseOut={() => pauseAudio()}
-                  />
-                </div>
-              ))}
+              <Grid container spacing={1}>
+                <Grid item xs={12} sm container>
+                  {displayList.map((item) => (
+                    <Track key={item.id} item={item}></Track>
+                  ))}
+                </Grid>
+              </Grid>
             </div>
           )}
         </div>
