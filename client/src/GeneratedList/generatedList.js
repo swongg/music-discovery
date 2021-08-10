@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import Title from "../UI/title";
 import "./generatedList.css";
 import Entity from "./entity";
 import { Button, ButtonGroup } from "@material-ui/core/";
 
 const url = new URL(window.location.href);
+let serverUri = "http://localhost:8888/";
+let clientUri = "http://localhost:3000/";
 let option = url.searchParams.get("option");
 let seeds_main = url.searchParams.get("seeds");
 let nol = url.searchParams.get("nol");
@@ -53,6 +55,16 @@ const GeneratedList = () => {
   const goToMainPage = () => {
     window.location.href = "http://localhost:3000/main";
   };
+
+  useLayoutEffect(() => {
+    fetch(serverUri + "loginstatus")
+      .then((res) => res.json())
+      .then((userLoginStatus) => {
+        if (!userLoginStatus) {
+          window.location.href = clientUri;
+        }
+      });
+  });
 
   useEffect(() => {
     fetch("http://localhost:8888/user")

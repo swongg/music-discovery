@@ -13,6 +13,7 @@ const port = process.env.PORT;
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
 const redirect_uri = process.env.REDIRECT_URI;
+let userLoggedIn = false;
 
 const spotifyApi = new SpotifyWebApi({
   clientId: client_id,
@@ -35,6 +36,10 @@ let generateRandomString = function (length) {
   }
   return text;
 };
+
+app.get("/loginstatus", (req, res) => {
+  res.send(userLoggedIn);
+});
 
 app.get("/auth", (req, res) => {
   let state = generateRandomString(16);
@@ -67,6 +72,7 @@ app.get("/callback", (req, res) => {
         })
     );
   } else {
+    userLoggedIn = true;
     spotifyApi
       .authorizationCodeGrant(code)
       .then((data) => {
