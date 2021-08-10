@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Title from "../UI/title";
 import Track from "./track";
 import "./main.css";
+
 import {
   Paper,
   Tabs,
@@ -14,9 +15,14 @@ import {
   Select,
 } from "@material-ui/core";
 
+
 const options = {
   TOPTRACKS_: 0,
   SAVEDTRACKS_: 1,
+};
+
+window.onunload = function () {
+  sessionStorage.clear();
 };
 
 const Main = () => {
@@ -43,13 +49,13 @@ const Main = () => {
 
   useEffect(() => {
     if (
-      "username" in localStorage &&
-      "topTracks" in localStorage &&
-      "savedTracks" in localStorage
+      "username" in sessionStorage &&
+      "topTracks" in sessionStorage &&
+      "savedTracks" in sessionStorage
     ) {
-      let username = localStorage.getItem("username");
-      let topTracks = JSON.parse(localStorage.getItem("topTracks"));
-      let savedTracks = JSON.parse(localStorage.getItem("savedTracks"));
+      let username = sessionStorage.getItem("username");
+      let topTracks = JSON.parse(sessionStorage.getItem("topTracks"));
+      let savedTracks = JSON.parse(sessionStorage.getItem("savedTracks"));
       setUsername(username);
       setTopSongs(topTracks);
       setSavedTracks(savedTracks);
@@ -66,9 +72,10 @@ const Main = () => {
         setUsername(username);
         setTopSongs(topTracks);
         setSavedTracks(savedTracks);
-        localStorage.setItem("username", username);
-        localStorage.setItem("topTracks", JSON.stringify(topTracks));
-        localStorage.setItem("savedTracks", JSON.stringify(savedTracks));
+        sessionStorage.setItem("username", username);
+        sessionStorage.setItem("topTracks", JSON.stringify(topTracks));
+        sessionStorage.setItem("savedTracks", JSON.stringify(savedTracks));
+        setTimeout(() => setDisplayList(topTracks));
       });
     }
   }, []);
