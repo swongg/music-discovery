@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import Title from "../UI/title";
 import Track from "./track";
 import "./main.css";
@@ -15,6 +15,8 @@ import {
   Select,
 } from "@material-ui/core";
 
+let serverUri = "http://localhost:8888/";
+let clientUri = "http://localhost:3000/";
 
 const options = {
   TOPTRACKS_: 0,
@@ -30,9 +32,7 @@ const Main = () => {
   const [username, setUsername] = useState();
   const [topSongs, setTopSongs] = useState();
   let [savedTracks, setSavedTracks] = useState();
-  let serverUri = "http://localhost:8888/";
-  let clientUri = "http://localhost:3000/";
-  const [num, setNum] = React.useState(5);
+  const [numOfSongs, setNumOfSongs] = React.useState(5);
 
   const [option, setOption] = useState(options.TOPTRACKS_);
   const [displayList, setDisplayList] = useState([]);
@@ -41,9 +41,19 @@ const Main = () => {
     setSeedList(seed);
   };
 
-  const handleNumChange = (event) => {
-    setNum(event.target.value);
+  const handleNumOfSongsChange = (event) => {
+    setNumOfSongs(event.target.value);
   };
+
+  useLayoutEffect(() => {
+    fetch(serverUri + "loginstatus")
+      .then((res) => res.json())
+      .then((userLoginStatus) => {
+        if (!userLoginStatus) {
+          window.location.href = clientUri;
+        }
+      });
+  });
 
   useEffect(() => {}, [seedList]);
 
@@ -95,10 +105,15 @@ const Main = () => {
   const generateSongs = (seeds, option) => {
     if (!seeds) {
       window.location.href =
-        clientUri + "generatelist" + "/?option=" + option + "&nol=" + num;
+        clientUri +
+        "generatelist" +
+        "/?option=" +
+        option +
+        "&nol=" +
+        numOfSongs;
     } else {
       window.location.href =
-        clientUri + "generatelist" + "/?seeds=" + seeds + "&nol=" + num;
+        clientUri + "generatelist" + "/?seeds=" + seeds + "&nol=" + numOfSongs;
     }
   };
 
@@ -120,7 +135,7 @@ const Main = () => {
             </span>
 
             <FormControl>
-              <Select value={num} onChange={handleNumChange}>
+              <Select value={numOfSongs} onChange={handleNumOfSongsChange}>
                 <MenuItem value={5}>5</MenuItem>
                 <MenuItem value={10}>10</MenuItem>
                 <MenuItem value={20}>20</MenuItem>
