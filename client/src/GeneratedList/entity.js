@@ -60,11 +60,15 @@ const Entity = (props) => {
                   </Typography>
                 </div>
                 <div className="audioPlayer">
-                  <AudioPlayer
-                    src={item.preview_url}
-                    width="220px"
-                    volume={false}
-                  ></AudioPlayer>
+                  {item.preview_url ? (
+                    <AudioPlayer
+                      src={item.preview_url}
+                      width="220px"
+                      volume={false}
+                    ></AudioPlayer>
+                  ) : (
+                    <div className="noDemo">demo currently not available</div>
+                  )}
                 </div>
               </div>
             </Grid>
