@@ -127,3 +127,9 @@
   background-position-y: -18px !important;
   box-shadow: inset 0 0 0 2000px rgb(40 41 44 / 35%);
 }
+
+.noDemo {
+  color: rgba(200, 200, 200, 0.9);
+  font-size: 12px;
+  margin-left: -60px;
+}
