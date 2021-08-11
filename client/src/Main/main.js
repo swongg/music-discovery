@@ -55,8 +55,6 @@ const Main = () => {
       });
   });
 
-  useEffect(() => {}, [seedList]);
-
   useEffect(() => {
     if (
       "username" in sessionStorage &&
@@ -131,7 +129,7 @@ const Main = () => {
 
           <div className="text__main">
             <span className="title">
-              You've currently selected {seedList.length} songs
+              Select up to 5 songs: currently {seedList.length} songs selected
             </span>
 
             <FormControl>

@@ -89,7 +89,8 @@ app.get("/callback", (req, res) => {
 });
 
 app.get("/toptracks", (req, res) => {
-  let num = req.query.num;
+  let num = 36;
+  if (req.query.num) num = req.query.num;
   spotifyApi
     .getMyTopTracks({
       limit: num,
@@ -103,7 +104,7 @@ app.get("/toptracks", (req, res) => {
 });
 
 app.get("/savedtracks", (req, res) => {
-  let num = 50;
+  let num = 36;
   if (req.query.num) num = req.query.num;
   spotifyApi
     .getMySavedTracks({

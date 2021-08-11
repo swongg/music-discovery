@@ -94,6 +94,8 @@ img.color {
 }
 
 .library__main {
+  height: 60vh;
+  overflow: auto;
   position: relative;
   top: 30px;
   display: block;
@@ -138,4 +140,30 @@ img.color {
 
 .text__main .MuiSelect-icon {
   color: rgba(255, 255, 255, 0.5);
+}
+
+.modal__track {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  top: 40% !important;
+  height: 100px;
+}
+
+.paper__track {
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 0px 0px 12px -3px rgba(5, 102, 141, 0.6);
+  padding: 20px;
+}
+
+.paper__track h5 {
+  font-size: 14px;
+}
+
+.paper__track p {
+  font-size: 13px;
+}
+
+.paper__track:focus-visible {
+  outline: none !important;
 }
