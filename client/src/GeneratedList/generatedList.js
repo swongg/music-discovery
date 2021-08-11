@@ -92,7 +92,6 @@ const GeneratedList = () => {
               .then((songs) => {
                 let songs_ = songs.body.tracks;
                 setDisplayList(songs_);
-                console.log(songs_);
               });
           }, 1);
         });
@@ -105,7 +104,6 @@ const GeneratedList = () => {
           .then((songs) => {
             let songs_ = songs.body.tracks;
             setDisplayList(songs_);
-            console.log(songs_);
           });
       }, 1);
     }
