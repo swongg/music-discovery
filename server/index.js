@@ -80,7 +80,7 @@ app.get("/callback", (req, res) => {
         let refresh_token = data.body["refresh_token"];
         spotifyApi.setAccessToken(access_token);
         spotifyApi.setRefreshToken(refresh_token);
-        res.redirect("http://localhost:3000/main");
+        res.redirect("https://music-discovery-frontend.web.app/main");
       })
       .catch((err) => {
         console.log(err);
