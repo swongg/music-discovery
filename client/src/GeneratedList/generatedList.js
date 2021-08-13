@@ -6,7 +6,7 @@ import { Button, ButtonGroup } from "@material-ui/core/";
 import { ip } from "../constants";
 
 const url = new URL(window.location.href);
-let clientUri = "http://localhost:3000/";
+let clientUri = "https://music-discovery-frontend.web.app/";
 let option = url.searchParams.get("option");
 let seeds_main = url.searchParams.get("seeds");
 let nol = url.searchParams.get("nol");
@@ -53,7 +53,7 @@ const GeneratedList = () => {
   const [displayList, setDisplayList] = useState([]);
 
   const goToMainPage = () => {
-    window.location.href = "http://localhost:3000/main";
+    window.location.href = `${clientUri}/main`;
   };
 
   useLayoutEffect(() => {

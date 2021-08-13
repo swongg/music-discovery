@@ -16,8 +16,7 @@ import {
   Select,
 } from "@material-ui/core";
 
-let serverUri = "http://localhost:8888/";
-let clientUri = "http://localhost:3000/";
+let clientUri = "https://music-discovery-frontend.web.app/";
 
 const options = {
   TOPTRACKS_: 0,
