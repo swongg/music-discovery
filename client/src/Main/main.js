@@ -2,6 +2,7 @@ import React, { useState, useEffect, useLayoutEffect } from "react";
 import Title from "../UI/title";
 import Track from "./track";
 import "./main.css";
+import { ip } from "../constants";
 
 import {
   Paper,
@@ -46,7 +47,7 @@ const Main = () => {
   };
 
   useLayoutEffect(() => {
-    fetch(serverUri + "loginstatus")
+    fetch(`${ip}/loginstatus`)
       .then((res) => res.json())
       .then((userLoginStatus) => {
         if (!userLoginStatus) {
@@ -70,9 +71,9 @@ const Main = () => {
       setTimeout(() => setDisplayList(topTracks));
     } else {
       Promise.all([
-        fetch(serverUri + "user").then((res) => res.json()),
-        fetch(serverUri + "toptracks").then((res) => res.json()),
-        fetch(serverUri + "savedtracks").then((res) => res.json()),
+        fetch(`${ip}/user`).then((res) => res.json()),
+        fetch(`${ip}/toptracks`).then((res) => res.json()),
+        fetch(`${ip}/savedtracks`).then((res) => res.json()),
       ]).then(([userInfo, topTracksInfo, savedTracksInfo]) => {
         let username = userInfo.body.display_name;
         let topTracks = topTracksInfo.body.items;

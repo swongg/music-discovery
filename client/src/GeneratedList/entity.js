@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Card, Grid, Typography, Grow } from "@material-ui/core";
 import AudioPlayer from "material-ui-audio-player";
 import Heart from "react-animated-heart";
+import { ip } from "../constants";
 
 const Entity = (props) => {
   const [isClick, setClick] = useState();
@@ -17,7 +18,7 @@ const Entity = (props) => {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
       };
-      fetch(`http://localhost:8888/savetrack/?id=${item.id}`, requestOptions)
+      fetch(`${ip}/savetrack/?id=${item.id}`, requestOptions)
         .then((response) => response.json())
         .then(() => {
           console.log("successfully added");
@@ -28,7 +29,7 @@ const Entity = (props) => {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
       };
-      fetch(`http://localhost:8888/removetrack/?id=${item.id}`, requestOptions)
+      fetch(`${ip}/removetrack/?id=${item.id}`, requestOptions)
         .then((response) => response.json())
         .then(() => {
           console.log("successfully removed");

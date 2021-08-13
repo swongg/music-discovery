@@ -1,13 +1,14 @@
 import React from "react";
 import Title from "../UI/title";
 import Button from "@material-ui/core/Button";
+import { ip } from "../constants";
 
 import "./landing.css";
 
 
 const Landing = () => {
   const connectToSpotify = () => {
-    window.location.href = "http://localhost:8888/auth"
+    window.location.href = `${ip}/auth`
   };
 
   return (
