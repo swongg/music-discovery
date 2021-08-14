@@ -2,7 +2,7 @@ import React, { useState, useEffect, useLayoutEffect } from "react";
 import Title from "../UI/title";
 import Track from "./track";
 import "./main.css";
-import { ip } from "../constants";
+import { client, ip } from "../constants";
 
 import {
   Paper,
@@ -16,7 +16,6 @@ import {
   Select,
 } from "@material-ui/core";
 
-let clientUri = "https://music-discovery-frontend.web.app/";
 
 const options = {
   TOPTRACKS_: 0,
@@ -50,7 +49,7 @@ const Main = () => {
       .then((res) => res.json())
       .then((userLoginStatus) => {
         if (!userLoginStatus) {
-          window.location.href = clientUri;
+          window.location.href = client;
         }
       });
   });
@@ -102,16 +101,9 @@ const Main = () => {
 
   const generateSongs = (seeds, option) => {
     if (!seeds) {
-      window.location.href =
-        clientUri +
-        "generatelist" +
-        "/?option=" +
-        option +
-        "&nol=" +
-        numOfSongs;
+      window.location.href = `${client}/generatelist/?option=${option}&nol=${numOfSongs}`;
     } else {
-      window.location.href =
-        clientUri + "generatelist" + "/?seeds=" + seeds + "&nol=" + numOfSongs;
+      window.location.href = `${client}/generatelist/?seeds=${seeds}&nol=${numOfSongs}`;
     }
   };
 

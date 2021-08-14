@@ -3,10 +3,9 @@ import Title from "../UI/title";
 import "./generatedList.css";
 import Entity from "./entity";
 import { Button, ButtonGroup } from "@material-ui/core/";
-import { ip } from "../constants";
+import { client, ip } from "../constants";
 
 const url = new URL(window.location.href);
-let clientUri = "https://music-discovery-frontend.web.app/";
 let option = url.searchParams.get("option");
 let seeds_main = url.searchParams.get("seeds");
 let nol = url.searchParams.get("nol");
@@ -53,7 +52,7 @@ const GeneratedList = () => {
   const [displayList, setDisplayList] = useState([]);
 
   const goToMainPage = () => {
-    window.location.href = `${clientUri}/main`;
+    window.location.href = `${client}/main`;
   };
 
   useLayoutEffect(() => {
@@ -61,7 +60,7 @@ const GeneratedList = () => {
       .then((res) => res.json())
       .then((userLoginStatus) => {
         if (!userLoginStatus) {
-          window.location.href = clientUri;
+          window.location.href = client;
         }
       });
   });

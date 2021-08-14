@@ -13,6 +13,7 @@ const port = process.env.PORT || 80;
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
 const redirect_uri = process.env.REDIRECT_URI;
+const client_uri = process.env.CLIENT_URI;
 let userLoggedIn = false;
 
 const spotifyApi = new SpotifyWebApi({
@@ -80,7 +81,7 @@ app.get("/callback", (req, res) => {
         let refresh_token = data.body["refresh_token"];
         spotifyApi.setAccessToken(access_token);
         spotifyApi.setRefreshToken(refresh_token);
-        res.redirect("https://music-discovery-frontend.web.app/main");
+        res.redirect(`${client_uri}/main`);
       })
       .catch((err) => {
         console.log(err);
