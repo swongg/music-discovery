@@ -78,7 +78,7 @@ const GeneratedList = () => {
     if (!seeds_main) {
       let fetchOptionArg = createOptionArgForFetch();
 
-      fetch(`${ip}/" + fetchOptionArg + "/?num=5`)
+      fetch(`${ip}/${fetchOptionArg}/?num=5`)
         .then((response) => response.json())
         .then((songs) => {
           let seeds = createRecommendationSeeds(songs, fetchOptionArg);

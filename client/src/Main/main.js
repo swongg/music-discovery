@@ -23,13 +23,10 @@ const options = {
 };
 
 window.onunload = function () {
-  sessionStorage.clear();
+  localStorage.clear();
 };
 
-let url;
 let spotifyApi;
-let access_token;
-let refresh_token;
 
 const Main = () => {
   const [seedList, setSeedList] = useState([]);
@@ -49,22 +46,32 @@ const Main = () => {
     setNumOfSongs(event.target.value);
   };
   const initializeSpotifyApi = () => {
-    url = new URL(window.location.href);
     spotifyApi = new SpotifyWebApi();
-    access_token = url.searchParams.get("access_token");
-    refresh_token = url.searchParams.get("refresh_token");
+    let url = new URL(window.location.href);
 
-    if (access_token === null) window.location.href = client;
+    let access_token_from_url = url.searchParams.get("access_token");
+    let access_token_from_storage = localStorage.getItem("access_token");
+    console.log("check storage:");
+    console.log(access_token_from_storage);
 
-    spotifyApi.setAccessToken(access_token);
-    spotifyApi.setRefreshToken(refresh_token);
+    if (access_token_from_url === null && access_token_from_storage === null)
+      window.location.href = client;
+
+    if (access_token_from_storage !== null) {
+      spotifyApi.setAccessToken(access_token_from_storage);
+    } else {
+      localStorage.setItem("access_token", access_token_from_url);
+      console.log("store item:")
+      console.log("access_token_from_url")
+      spotifyApi.setAccessToken(access_token_from_url);
+    }
   };
 
   const storageContainsData = () => {
     return (
-      "username" in sessionStorage &&
-      "topTracks" in sessionStorage &&
-      "savedTracks" in sessionStorage
+      "username" in localStorage &&
+      "topTracks" in localStorage &&
+      "savedTracks" in localStorage
     );
   };
 
@@ -72,9 +79,9 @@ const Main = () => {
     initializeSpotifyApi();
 
     if (storageContainsData()) {
-      let username = sessionStorage.getItem("username");
-      let topTracks = JSON.parse(sessionStorage.getItem("topTracks"));
-      let savedTracks = JSON.parse(sessionStorage.getItem("savedTracks"));
+      let username = localStorage.getItem("username");
+      let topTracks = JSON.parse(localStorage.getItem("topTracks"));
+      let savedTracks = JSON.parse(localStorage.getItem("savedTracks"));
       setUsername(username);
       setTopSongs(topTracks);
       setSavedTracks(savedTracks);
@@ -91,9 +98,9 @@ const Main = () => {
         setUsername(username);
         setTopSongs(topTracks);
         setSavedTracks(savedTracks);
-        sessionStorage.setItem("username", username);
-        sessionStorage.setItem("topTracks", JSON.stringify(topTracks));
-        sessionStorage.setItem("savedTracks", JSON.stringify(savedTracks));
+        localStorage.setItem("username", username);
+        localStorage.setItem("topTracks", JSON.stringify(topTracks));
+        localStorage.setItem("savedTracks", JSON.stringify(savedTracks));
         setTimeout(() => setDisplayList(topTracks));
       });
     }
