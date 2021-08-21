@@ -3,10 +3,9 @@ import Title from "../UI/title";
 import "./generatedList.css";
 import Entity from "./entity";
 import { Button, ButtonGroup } from "@material-ui/core/";
+import { client, ip } from "../constants";
 
 const url = new URL(window.location.href);
-let serverUri = "http://localhost:8888/";
-let clientUri = "http://localhost:3000/";
 let option = url.searchParams.get("option");
 let seeds_main = url.searchParams.get("seeds");
 let nol = url.searchParams.get("nol");
@@ -53,21 +52,21 @@ const GeneratedList = () => {
   const [displayList, setDisplayList] = useState([]);
 
   const goToMainPage = () => {
-    window.location.href = "http://localhost:3000/main";
+    window.location.href = `${client}/main`;
   };
 
   useLayoutEffect(() => {
-    fetch(serverUri + "loginstatus")
+    fetch(`${ip}/loginstatus`)
       .then((res) => res.json())
       .then((userLoginStatus) => {
         if (!userLoginStatus) {
-          window.location.href = clientUri;
+          window.location.href = client;
         }
       });
   });
 
   useEffect(() => {
-    fetch("http://localhost:8888/user")
+    fetch(`${ip}/user`)
       .then((response) => response.json())
       .then((userInfo) => {
         let username = userInfo.body.display_name;
@@ -79,15 +78,13 @@ const GeneratedList = () => {
     if (!seeds_main) {
       let fetchOptionArg = createOptionArgForFetch();
 
-      fetch("http://localhost:8888/" + fetchOptionArg + "/?num=5")
+      fetch(`${ip}/" + fetchOptionArg + "/?num=5`)
         .then((response) => response.json())
         .then((songs) => {
           let seeds = createRecommendationSeeds(songs, fetchOptionArg);
 
           setTimeout(() => {
-            fetch(
-              `http://localhost:8888/recommendations/?seeds=${seeds}&nol=${nol}`
-            )
+            fetch(`${ip}/recommendations/?seeds=${seeds}&nol=${nol}`)
               .then((response) => response.json())
               .then((songs) => {
                 let songs_ = songs.body.tracks;
@@ -97,9 +94,7 @@ const GeneratedList = () => {
         });
     } else {
       setTimeout(() => {
-        fetch(
-          `http://localhost:8888/recommendations/?seeds=${seeds_main}&nol=${nol}`
-        )
+        fetch(`${ip}/recommendations/?seeds=${seeds_main}&nol=${nol}`)
           .then((response) => response.json())
           .then((songs) => {
             let songs_ = songs.body.tracks;

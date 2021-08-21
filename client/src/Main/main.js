@@ -2,6 +2,7 @@ import React, { useState, useEffect, useLayoutEffect } from "react";
 import Title from "../UI/title";
 import Track from "./track";
 import "./main.css";
+import { client, ip } from "../constants";
 
 import {
   Paper,
@@ -15,8 +16,6 @@ import {
   Select,
 } from "@material-ui/core";
 
-let serverUri = "http://localhost:8888/";
-let clientUri = "http://localhost:3000/";
 
 const options = {
   TOPTRACKS_: 0,
@@ -46,11 +45,11 @@ const Main = () => {
   };
 
   useLayoutEffect(() => {
-    fetch(serverUri + "loginstatus")
+    fetch(`${ip}/loginstatus`)
       .then((res) => res.json())
       .then((userLoginStatus) => {
         if (!userLoginStatus) {
-          window.location.href = clientUri;
+          window.location.href = client;
         }
       });
   });
@@ -70,9 +69,9 @@ const Main = () => {
       setTimeout(() => setDisplayList(topTracks));
     } else {
       Promise.all([
-        fetch(serverUri + "user").then((res) => res.json()),
-        fetch(serverUri + "toptracks").then((res) => res.json()),
-        fetch(serverUri + "savedtracks").then((res) => res.json()),
+        fetch(`${ip}/user`).then((res) => res.json()),
+        fetch(`${ip}/toptracks`).then((res) => res.json()),
+        fetch(`${ip}/savedtracks`).then((res) => res.json()),
       ]).then(([userInfo, topTracksInfo, savedTracksInfo]) => {
         let username = userInfo.body.display_name;
         let topTracks = topTracksInfo.body.items;
@@ -102,16 +101,9 @@ const Main = () => {
 
   const generateSongs = (seeds, option) => {
     if (!seeds) {
-      window.location.href =
-        clientUri +
-        "generatelist" +
-        "/?option=" +
-        option +
-        "&nol=" +
-        numOfSongs;
+      window.location.href = `${client}/generatelist/?option=${option}&nol=${numOfSongs}`;
     } else {
-      window.location.href =
-        clientUri + "generatelist" + "/?seeds=" + seeds + "&nol=" + numOfSongs;
+      window.location.href = `${client}/generatelist/?seeds=${seeds}&nol=${numOfSongs}`;
     }
   };
 
