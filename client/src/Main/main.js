@@ -3,6 +3,7 @@ import Title from "../UI/title";
 import Track from "./track";
 import "./main.css";
 import { client, ip } from "../constants";
+import SpotifyWebApi from "spotify-web-api-js";
 
 import {
   Paper,
@@ -21,6 +22,11 @@ const options = {
   TOPTRACKS_: 0,
   SAVEDTRACKS_: 1,
 };
+
+const url = new URL(window.location.href);
+const spotifyApi = new SpotifyWebApi();
+let access_token = url.searchParams.get("access_token");
+console.log(access_token);
 
 window.onunload = function () {
   sessionStorage.clear();
