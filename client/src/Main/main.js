@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useLayoutEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Title from "../UI/title";
 import Track from "./track";
 import "./main.css";
-import { client, ip } from "../constants";
-import SpotifyWebApi from "spotify-web-api-js";
+import { client } from "../constants";
+import SpotifyWebApi from "spotify-web-api-node";
 
 import {
   Paper,
@@ -17,26 +17,25 @@ import {
   Select,
 } from "@material-ui/core";
 
-
 const options = {
   TOPTRACKS_: 0,
   SAVEDTRACKS_: 1,
 };
 
-const url = new URL(window.location.href);
-const spotifyApi = new SpotifyWebApi();
-let access_token = url.searchParams.get("access_token");
-console.log(access_token);
-
 window.onunload = function () {
   sessionStorage.clear();
 };
+
+let url;
+let spotifyApi;
+let access_token;
+let refresh_token;
 
 const Main = () => {
   const [seedList, setSeedList] = useState([]);
   const [username, setUsername] = useState();
   const [topSongs, setTopSongs] = useState();
-  let [savedTracks, setSavedTracks] = useState();
+  const [savedTracks, setSavedTracks] = useState();
   const [numOfSongs, setNumOfSongs] = React.useState(5);
 
   const [option, setOption] = useState(options.TOPTRACKS_);
@@ -49,23 +48,30 @@ const Main = () => {
   const handleNumOfSongsChange = (event) => {
     setNumOfSongs(event.target.value);
   };
+  const initializeSpotifyApi = () => {
+    url = new URL(window.location.href);
+    spotifyApi = new SpotifyWebApi();
+    access_token = url.searchParams.get("access_token");
+    refresh_token = url.searchParams.get("refresh_token");
 
-  useLayoutEffect(() => {
-    fetch(`${ip}/loginstatus`)
-      .then((res) => res.json())
-      .then((userLoginStatus) => {
-        if (!userLoginStatus) {
-          window.location.href = client;
-        }
-      });
-  });
+    if (access_token === null) window.location.href = client;
 
-  useEffect(() => {
-    if (
+    spotifyApi.setAccessToken(access_token);
+    spotifyApi.setRefreshToken(refresh_token);
+  };
+
+  const storageContainsData = () => {
+    return (
       "username" in sessionStorage &&
       "topTracks" in sessionStorage &&
       "savedTracks" in sessionStorage
-    ) {
+    );
+  };
+
+  useEffect(() => {
+    initializeSpotifyApi();
+
+    if (storageContainsData()) {
       let username = sessionStorage.getItem("username");
       let topTracks = JSON.parse(sessionStorage.getItem("topTracks"));
       let savedTracks = JSON.parse(sessionStorage.getItem("savedTracks"));
@@ -75,9 +81,9 @@ const Main = () => {
       setTimeout(() => setDisplayList(topTracks));
     } else {
       Promise.all([
-        fetch(`${ip}/user`).then((res) => res.json()),
-        fetch(`${ip}/toptracks`).then((res) => res.json()),
-        fetch(`${ip}/savedtracks`).then((res) => res.json()),
+        spotifyApi.getMe(),
+        spotifyApi.getMyTopTracks({ limit: 36 }),
+        spotifyApi.getMySavedTracks({ limit: 36 }),
       ]).then(([userInfo, topTracksInfo, savedTracksInfo]) => {
         let username = userInfo.body.display_name;
         let topTracks = topTracksInfo.body.items;
