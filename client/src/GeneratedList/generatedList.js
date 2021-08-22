@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useLayoutEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Title from "../UI/title";
 import "./generatedList.css";
 import Entity from "./entity";
 import { Button, ButtonGroup } from "@material-ui/core/";
 import { client, ip } from "../constants";
+import SpotifyWebApi from "spotify-web-api-node";
+import { initializeSpotifyApi } from "../initializeSpotifyAPI";
 
 const url = new URL(window.location.href);
 let option = url.searchParams.get("option");
@@ -55,54 +57,73 @@ const GeneratedList = () => {
     window.location.href = `${client}/main`;
   };
 
-  useLayoutEffect(() => {
-    fetch(`${ip}/loginstatus`)
-      .then((res) => res.json())
-      .then((userLoginStatus) => {
-        if (!userLoginStatus) {
-          window.location.href = client;
-        }
-      });
-  });
-
   useEffect(() => {
-    fetch(`${ip}/user`)
-      .then((response) => response.json())
-      .then((userInfo) => {
-        let username = userInfo.body.display_name;
-        setUsername(username);
-      });
-  }, []);
+    let spotifyApi = new SpotifyWebApi();
+    initializeSpotifyApi(spotifyApi);
 
-  useEffect(() => {
-    if (!seeds_main) {
-      let fetchOptionArg = createOptionArgForFetch();
+    spotifyApi.getMe().then((userInfo) => {
+      let username = userInfo.body.display_name;
+      setUsername(username);
 
-      fetch(`${ip}/${fetchOptionArg}/?num=5`)
-        .then((response) => response.json())
-        .then((songs) => {
-          let seeds = createRecommendationSeeds(songs, fetchOptionArg);
+      if (!seeds_main) {
+        let fetchOptionArg = createOptionArgForFetch();
 
-          setTimeout(() => {
-            fetch(`${ip}/recommendations/?seeds=${seeds}&nol=${nol}`)
-              .then((response) => response.json())
-              .then((songs) => {
-                let songs_ = songs.body.tracks;
-                setDisplayList(songs_);
-              });
-          }, 1);
-        });
-    } else {
-      setTimeout(() => {
-        fetch(`${ip}/recommendations/?seeds=${seeds_main}&nol=${nol}`)
+        fetch(`${ip}/${fetchOptionArg}/?num=5`)
           .then((response) => response.json())
           .then((songs) => {
-            let songs_ = songs.body.tracks;
-            setDisplayList(songs_);
+            let seeds = createRecommendationSeeds(songs, fetchOptionArg);
+
+            setTimeout(() => {
+              fetch(`${ip}/recommendations/?seeds=${seeds}&nol=${nol}`)
+                .then((response) => response.json())
+                .then((songs) => {
+                  let songs_ = songs.body.tracks;
+                  setDisplayList(songs_);
+                });
+            }, 1);
           });
-      }, 1);
-    }
+      } else {
+        setTimeout(() => {
+          fetch(`${ip}/recommendations/?seeds=${seeds_main}&nol=${nol}`)
+            .then((response) => response.json())
+            .then((songs) => {
+              let songs_ = songs.body.tracks;
+              setDisplayList(songs_);
+            });
+        }, 1);
+      }
+    });
   }, []);
+
+  // useEffect(() => {
+  //   if (!seeds_main) {
+  //     let fetchOptionArg = createOptionArgForFetch();
+
+  //     fetch(`${ip}/${fetchOptionArg}/?num=5`)
+  //       .then((response) => response.json())
+  //       .then((songs) => {
+  //         let seeds = createRecommendationSeeds(songs, fetchOptionArg);
+
+  //         setTimeout(() => {
+  //           fetch(`${ip}/recommendations/?seeds=${seeds}&nol=${nol}`)
+  //             .then((response) => response.json())
+  //             .then((songs) => {
+  //               let songs_ = songs.body.tracks;
+  //               setDisplayList(songs_);
+  //             });
+  //         }, 1);
+  //       });
+  //   } else {
+  //     setTimeout(() => {
+  //       fetch(`${ip}/recommendations/?seeds=${seeds_main}&nol=${nol}`)
+  //         .then((response) => response.json())
+  //         .then((songs) => {
+  //           let songs_ = songs.body.tracks;
+  //           setDisplayList(songs_);
+  //         });
+  //     }, 1);
+  //   }
+  // }, []);
 
   const backgroundSize = {
     height: "150vh",
