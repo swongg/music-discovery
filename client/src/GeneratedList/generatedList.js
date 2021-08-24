@@ -3,7 +3,7 @@ import Title from "../UI/title";
 import "./generatedList.css";
 import Entity from "./entity";
 import { Button, ButtonGroup } from "@material-ui/core/";
-import { client, ip } from "../constants";
+import { client } from "../constants";
 import SpotifyWebApi from "spotify-web-api-node";
 import { initializeSpotifyApi } from "../initializeSpotifyAPI";
 
@@ -17,23 +17,7 @@ const options = {
   SAVEDTRACKS_: 1,
 };
 
-let createOptionArgForFetch = () => {
-  let fetchOptionArg;
-  switch (+option) {
-    case options.TOPTRACKS_:
-      fetchOptionArg = "toptracks";
-      break;
-    case options.SAVEDTRACKS_:
-      fetchOptionArg = "savedtracks";
-      break;
-  }
-  return fetchOptionArg;
-};
-
 let createRecommendationSeeds = (songs, option) => {
-  console.log(songs);
-  console.log("option:");
-  console.log(option);
   let seeds = "";
   let songs_;
   if (option == options.TOPTRACKS_) {
@@ -45,7 +29,7 @@ let createRecommendationSeeds = (songs, option) => {
     seeds = seeds + "," + song.id;
   }
   seeds = seeds.substring(1);
-  return seeds;
+  return seeds.split(",");
 };
 
 const refreshPage = () => {
@@ -60,59 +44,20 @@ const GeneratedList = () => {
     window.location.href = `${client}/main`;
   };
 
-  // const getRecommendationsNoSeeds = (spotifyApi) => {
-  //   if (option == options.TOPTRACKS_) {
-  //     console.log("line 62");
-  //     spotifyApi.getMyTopTracks().then((topTracks) => {
-  //       let seeds = createRecommendationSeeds(topTracks, option);
-  //       setTimeout(() => {
-  //         spotifyApi
-  //           .getRecommendations({
-  //             limit: nol,
-  //             min_energy: 0.4,
-  //             seed_tracks: seeds,
-  //             min_popularity: 50,
-  //           })
-  //           .then((songs) => {
-  //             let songs_ = songs.body.tracks;
-  //             console.log("line 74");
-  //             console.log(songs_);
-  //             setDisplayList(songs_);
-  //           });
-  //       }, 1);
-  //     });
-  //   } else if (option == options.SAVEDTRACKS_) {
-  //     spotifyApi.getMySavedTracks().then((savedTracks) => {
-  //       let seeds = createRecommendationSeeds(savedTracks, option);
-  //       setTimeout(() => {
-  //         spotifyApi
-  //           .getRecommendations({
-  //             limit: nol,
-  //             min_energy: 0.4,
-  //             seed_tracks: seeds,
-  //             min_popularity: 50,
-  //           })
-  //           .then((songs) => {
-  //             let songs_ = songs.body.tracks;
-  //             setDisplayList(songs_);
-  //           });
-  //       }, 1);
-  //     });
-  //   }
-  // };
-
-  const getRecommendationsNoSeeds = (spotifyApi) => {
-  
+  const getSongRecommendations = (spotifyApi) => {
+    let songRetrieval;
     // if (option == options.TOPTRACKS_) {
-      let songRetrieval = spotifyApi.getMyTopTracks();
+      songRetrieval = spotifyApi.getMyTopTracks();
     // } else if (option == options.SAVEDTRACKS_) {
     //   songRetrieval = spotifyApi.getMySavedTracks();
-    //   console.log("line 110!");
     // }
 
-    songRetrieval.then((savedTracks) => {
-      console.log(savedTracks);
-      let seeds = createRecommendationSeeds(savedTracks, option);
+    songRetrieval.then((songs) => {
+      let seeds = seeds_main;
+
+      if (!seeds) {
+        seeds = createRecommendationSeeds(songs, option);
+      }
       setTimeout(() => {
         spotifyApi
           .getRecommendations({
@@ -122,7 +67,9 @@ const GeneratedList = () => {
             min_popularity: 50,
           })
           .then((songs) => {
+            console.log("retrieved recommendations!");
             let songs_ = songs.body.tracks;
+            console.log(songs_);
             setDisplayList(songs_);
           });
       }, 1);
@@ -137,19 +84,7 @@ const GeneratedList = () => {
       let username = userInfo.body.display_name;
       setUsername(username);
 
-      if (!seeds_main) {
-        console.log("line 140");
-        getRecommendationsNoSeeds(spotifyApi);
-      } else {
-        setTimeout(() => {
-          fetch(`${ip}/recommendations/?seeds=${seeds_main}&nol=${nol}`)
-            .then((response) => response.json())
-            .then((songs) => {
-              let songs_ = songs.body.tracks;
-              setDisplayList(songs_);
-            });
-        }, 1);
-      }
+      getSongRecommendations(spotifyApi);
     });
   }, []);
 
