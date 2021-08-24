@@ -102,8 +102,7 @@ const Main = () => {
   };
 
   const generateSongs = (seeds, option) => {
-    console.log("HELLO")
-    if (!seeds) {
+    if (seeds.length === 0) {
       console.log(seeds);
       window.location.href = `${client}/generatelist/?option=${option}&nol=${numOfSongs}`;
     } else {
