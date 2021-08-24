@@ -31,11 +31,14 @@ let createOptionArgForFetch = () => {
 };
 
 let createRecommendationSeeds = (songs, option) => {
+  console.log(songs);
+  console.log("option:");
+  console.log(option);
   let seeds = "";
   let songs_;
-  if (option == "toptracks") {
+  if (option == options.TOPTRACKS_) {
     songs_ = songs.body.items;
-  } else if (option == "savedtracks") {
+  } else if (option == options.SAVEDTRACKS_) {
     songs_ = songs.body.items.map((t) => t.track);
   }
   for (let song of songs_) {
@@ -57,6 +60,75 @@ const GeneratedList = () => {
     window.location.href = `${client}/main`;
   };
 
+  // const getRecommendationsNoSeeds = (spotifyApi) => {
+  //   if (option == options.TOPTRACKS_) {
+  //     console.log("line 62");
+  //     spotifyApi.getMyTopTracks().then((topTracks) => {
+  //       let seeds = createRecommendationSeeds(topTracks, option);
+  //       setTimeout(() => {
+  //         spotifyApi
+  //           .getRecommendations({
+  //             limit: nol,
+  //             min_energy: 0.4,
+  //             seed_tracks: seeds,
+  //             min_popularity: 50,
+  //           })
+  //           .then((songs) => {
+  //             let songs_ = songs.body.tracks;
+  //             console.log("line 74");
+  //             console.log(songs_);
+  //             setDisplayList(songs_);
+  //           });
+  //       }, 1);
+  //     });
+  //   } else if (option == options.SAVEDTRACKS_) {
+  //     spotifyApi.getMySavedTracks().then((savedTracks) => {
+  //       let seeds = createRecommendationSeeds(savedTracks, option);
+  //       setTimeout(() => {
+  //         spotifyApi
+  //           .getRecommendations({
+  //             limit: nol,
+  //             min_energy: 0.4,
+  //             seed_tracks: seeds,
+  //             min_popularity: 50,
+  //           })
+  //           .then((songs) => {
+  //             let songs_ = songs.body.tracks;
+  //             setDisplayList(songs_);
+  //           });
+  //       }, 1);
+  //     });
+  //   }
+  // };
+
+  const getRecommendationsNoSeeds = (spotifyApi) => {
+  
+    // if (option == options.TOPTRACKS_) {
+      let songRetrieval = spotifyApi.getMyTopTracks();
+    // } else if (option == options.SAVEDTRACKS_) {
+    //   songRetrieval = spotifyApi.getMySavedTracks();
+    //   console.log("line 110!");
+    // }
+
+    songRetrieval.then((savedTracks) => {
+      console.log(savedTracks);
+      let seeds = createRecommendationSeeds(savedTracks, option);
+      setTimeout(() => {
+        spotifyApi
+          .getRecommendations({
+            limit: nol,
+            min_energy: 0.4,
+            seed_tracks: seeds,
+            min_popularity: 50,
+          })
+          .then((songs) => {
+            let songs_ = songs.body.tracks;
+            setDisplayList(songs_);
+          });
+      }, 1);
+    });
+  };
+
   useEffect(() => {
     let spotifyApi = new SpotifyWebApi();
     initializeSpotifyApi(spotifyApi);
@@ -66,22 +138,8 @@ const GeneratedList = () => {
       setUsername(username);
 
       if (!seeds_main) {
-        let fetchOptionArg = createOptionArgForFetch();
-
-        fetch(`${ip}/${fetchOptionArg}/?num=5`)
-          .then((response) => response.json())
-          .then((songs) => {
-            let seeds = createRecommendationSeeds(songs, fetchOptionArg);
-
-            setTimeout(() => {
-              fetch(`${ip}/recommendations/?seeds=${seeds}&nol=${nol}`)
-                .then((response) => response.json())
-                .then((songs) => {
-                  let songs_ = songs.body.tracks;
-                  setDisplayList(songs_);
-                });
-            }, 1);
-          });
+        console.log("line 140");
+        getRecommendationsNoSeeds(spotifyApi);
       } else {
         setTimeout(() => {
           fetch(`${ip}/recommendations/?seeds=${seeds_main}&nol=${nol}`)
@@ -94,36 +152,6 @@ const GeneratedList = () => {
       }
     });
   }, []);
-
-  // useEffect(() => {
-  //   if (!seeds_main) {
-  //     let fetchOptionArg = createOptionArgForFetch();
-
-  //     fetch(`${ip}/${fetchOptionArg}/?num=5`)
-  //       .then((response) => response.json())
-  //       .then((songs) => {
-  //         let seeds = createRecommendationSeeds(songs, fetchOptionArg);
-
-  //         setTimeout(() => {
-  //           fetch(`${ip}/recommendations/?seeds=${seeds}&nol=${nol}`)
-  //             .then((response) => response.json())
-  //             .then((songs) => {
-  //               let songs_ = songs.body.tracks;
-  //               setDisplayList(songs_);
-  //             });
-  //         }, 1);
-  //       });
-  //   } else {
-  //     setTimeout(() => {
-  //       fetch(`${ip}/recommendations/?seeds=${seeds_main}&nol=${nol}`)
-  //         .then((response) => response.json())
-  //         .then((songs) => {
-  //           let songs_ = songs.body.tracks;
-  //           setDisplayList(songs_);
-  //         });
-  //     }, 1);
-  //   }
-  // }, []);
 
   const backgroundSize = {
     height: "150vh",

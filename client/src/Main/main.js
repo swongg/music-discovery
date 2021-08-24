@@ -102,9 +102,12 @@ const Main = () => {
   };
 
   const generateSongs = (seeds, option) => {
+    console.log("HELLO")
     if (!seeds) {
+      console.log(seeds);
       window.location.href = `${client}/generatelist/?option=${option}&nol=${numOfSongs}`;
     } else {
+      console.log(seeds);
       window.location.href = `${client}/generatelist/?seeds=${seeds}&nol=${numOfSongs}`;
     }
   };
