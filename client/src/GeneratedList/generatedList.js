@@ -25,11 +25,23 @@ let createRecommendationSeeds = (songs, option) => {
   } else if (option == options.SAVEDTRACKS_) {
     songs_ = songs.body.items.map((t) => t.track);
   }
-  for (let song of songs_) {
-    seeds = seeds + "," + song.id;
+
+  let limit = Math.min(5, songs_.length);
+
+  for (let i = 0; i < limit; i++) {
+    seeds = seeds + "," + songs_[i].id;
   }
+  console.log("unmodified seeds:");
+  console.log(seeds);
   seeds = seeds.substring(1);
-  return seeds.split(",");
+  console.log("substring mod");
+  console.log(seeds);
+
+
+  // seeds = seeds.split(",");
+  // console.log("line 33")
+  // console.log(seeds);
+  return seeds;
 };
 
 const refreshPage = () => {
@@ -46,17 +58,20 @@ const GeneratedList = () => {
 
   const getSongRecommendations = (spotifyApi) => {
     let songRetrieval;
-    // if (option == options.TOPTRACKS_) {
+    if (option == options.TOPTRACKS_) {
       songRetrieval = spotifyApi.getMyTopTracks();
-    // } else if (option == options.SAVEDTRACKS_) {
-    //   songRetrieval = spotifyApi.getMySavedTracks();
-    // }
+    } else  {
+      songRetrieval = spotifyApi.getMySavedTracks();
+    }
 
     songRetrieval.then((songs) => {
       let seeds = seeds_main;
+      console.log(seeds);
 
-      if (!seeds) {
+      if (seeds === null) {
         seeds = createRecommendationSeeds(songs, option);
+        console.log("created seeds:")
+        console.log(seeds);
       }
       setTimeout(() => {
         spotifyApi
@@ -67,7 +82,6 @@ const GeneratedList = () => {
             min_popularity: 50,
           })
           .then((songs) => {
-            console.log("retrieved recommendations!");
             let songs_ = songs.body.tracks;
             console.log(songs_);
             setDisplayList(songs_);
