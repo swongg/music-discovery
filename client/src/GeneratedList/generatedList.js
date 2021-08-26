@@ -8,6 +8,7 @@ import SpotifyWebApi from "spotify-web-api-node";
 import { initializeSpotifyApi } from "../initializeSpotifyAPI";
 
 const url = new URL(window.location.href);
+const SEEDLIMIT = 5;
 let option = url.searchParams.get("option");
 let seeds_main = url.searchParams.get("seeds");
 let nol = url.searchParams.get("nol");
@@ -26,21 +27,13 @@ let createRecommendationSeeds = (songs, option) => {
     songs_ = songs.body.items.map((t) => t.track);
   }
 
-  let limit = Math.min(5, songs_.length);
+  let limit = Math.min(SEEDLIMIT, songs_.length);
 
   for (let i = 0; i < limit; i++) {
     seeds = seeds + "," + songs_[i].id;
   }
-  console.log("unmodified seeds:");
-  console.log(seeds);
+
   seeds = seeds.substring(1);
-  console.log("substring mod");
-  console.log(seeds);
-
-
-  // seeds = seeds.split(",");
-  // console.log("line 33")
-  // console.log(seeds);
   return seeds;
 };
 
@@ -60,18 +53,15 @@ const GeneratedList = () => {
     let songRetrieval;
     if (option == options.TOPTRACKS_) {
       songRetrieval = spotifyApi.getMyTopTracks();
-    } else  {
+    } else {
       songRetrieval = spotifyApi.getMySavedTracks();
     }
 
     songRetrieval.then((songs) => {
       let seeds = seeds_main;
-      console.log(seeds);
 
       if (seeds === null) {
         seeds = createRecommendationSeeds(songs, option);
-        console.log("created seeds:")
-        console.log(seeds);
       }
       setTimeout(() => {
         spotifyApi
@@ -83,7 +73,6 @@ const GeneratedList = () => {
           })
           .then((songs) => {
             let songs_ = songs.body.tracks;
-            console.log(songs_);
             setDisplayList(songs_);
           });
       }, 1);

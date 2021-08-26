@@ -1,5 +1,4 @@
 const express = require("express");
-// const fqdn = window.location.host;
 const dotenv = require("dotenv");
 const querystring = require("querystring");
 const SpotifyWebApi = require("spotify-web-api-node");
@@ -81,113 +80,12 @@ app.get("/callback", (req, res) => {
         let refresh_token = data.body["refresh_token"];
         spotifyApi.setAccessToken(access_token);
         spotifyApi.setRefreshToken(refresh_token);
-          res.redirect(`${client_uri}/main?access_token=${access_token}`);
-        
+        res.redirect(`${client_uri}/main?access_token=${access_token}`);
       })
       .catch((err) => {
         console.log(err);
       });
   }
-});
-
-// app.get("/toptracks", (req, res) => {
-//   let num = 36;
-//   if (req.query.num) num = req.query.num;
-//   spotifyApi
-//     .getMyTopTracks({
-//       limit: num,
-//     })
-//     .then((topTracks) => {
-//       res.json(topTracks);
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-// });
-
-// app.get("/savedtracks", (req, res) => {
-//   let num = 36;
-//   if (req.query.num) num = req.query.num;
-//   spotifyApi
-//     .getMySavedTracks({
-//       limit: num,
-//     })
-//     .then((savedTracks) => {
-//       res.json(savedTracks);
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-// });
-
-// app.get("/playlists", (req, res) => {
-//   spotifyApi
-//     .getUserPlaylists()
-//     .then((lists) => {
-//       res.json(lists);
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-// });
-
-// app.get("/user", (req, res) => {
-//   spotifyApi
-//     .getMe()
-//     .then((userProfile) => {
-//       res.json(userProfile);
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-// });
-
-// app.get("/recommendations", (req, res) => {
-//   let seeds = req.query.seeds.split(",");
-//   let nol = req.query.nol;
-//   spotifyApi
-//     .getRecommendations({
-//       limit: nol,
-//       min_energy: 0.4,
-//       seed_tracks: seeds,
-//       min_popularity: 50,
-//     })
-//     .then((recommendations) => {
-//       res.json(recommendations);
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-// });
-
-app.put("/savetrack", (req, res) => {
-  let param = [];
-  let id = req.query.id.toString();
-  param.push(id);
-  let obj = { ids: param };
-  spotifyApi
-    .addToMySavedTracks(obj.ids)
-    .then(function (data) {
-      res.json(data);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
-
-app.put("/removetrack", (req, res) => {
-  let param = [];
-  let id = req.query.id.toString();
-  param.push(id);
-  let obj = { ids: param };
-  spotifyApi
-    .removeFromMySavedTracks(obj.ids)
-    .then(function (data) {
-      res.json(data);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
 });
 
 app.listen(port, () => {
