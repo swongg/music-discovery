@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Card, Grid, Typography, Grow } from "@material-ui/core";
 import AudioPlayer from "material-ui-audio-player";
 import Heart from "react-animated-heart";
-import { ip } from "../constants";
+import SpotifyWebApi from "spotify-web-api-node";
+import { initializeSpotifyApi } from "../initializeSpotifyAPI";
 
 const Entity = (props) => {
   const [isClick, setClick] = useState();
@@ -13,27 +14,18 @@ const Entity = (props) => {
   };
 
   useEffect(() => {
-    if (isClick === true) {
-      const requestOptions = {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-      };
-      fetch(`${ip}/savetrack/?id=${item.id}`, requestOptions)
-        .then((response) => response.json())
-        .then(() => {
-          console.log("successfully added");
-        });
+    let spotifyApi = new SpotifyWebApi();
+    initializeSpotifyApi(spotifyApi);
+    let idArr = [item.id];
+    if (isClick) {
+      spotifyApi.addToMySavedTracks(idArr).then(() => {
+        console.log("successfully added");
+      });
     }
-    if (isClick === false) {
-      const requestOptions = {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-      };
-      fetch(`${ip}/removetrack/?id=${item.id}`, requestOptions)
-        .then((response) => response.json())
-        .then(() => {
-          console.log("successfully removed");
-        });
+    if (!isClick) {
+      spotifyApi.removeFromMySavedTracks(idArr).then(() => {
+        console.log("successfully removed");
+      });
     }
   }, [isClick]);
 
