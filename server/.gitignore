@@ -12,6 +12,7 @@
 /build
 
 # misc
+env settings.txt
 .env
 .DS_Store
 .env.local

@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useLayoutEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Title from "../UI/title";
 import Track from "./track";
 import "./main.css";
-import { client, ip } from "../constants";
+import { client } from "../constants";
+import SpotifyWebApi from "spotify-web-api-node";
+import { initializeSpotifyApi } from "../initializeSpotifyAPI";
 
 import {
   Paper,
@@ -16,21 +18,20 @@ import {
   Select,
 } from "@material-ui/core";
 
-
 const options = {
   TOPTRACKS_: 0,
   SAVEDTRACKS_: 1,
 };
 
-window.onunload = function () {
-  sessionStorage.clear();
-};
+// window.onunload = function () {
+//   sessionStorage.clear();
+// };
 
 const Main = () => {
   const [seedList, setSeedList] = useState([]);
   const [username, setUsername] = useState();
   const [topSongs, setTopSongs] = useState();
-  let [savedTracks, setSavedTracks] = useState();
+  const [savedTracks, setSavedTracks] = useState();
   const [numOfSongs, setNumOfSongs] = React.useState(5);
 
   const [option, setOption] = useState(options.TOPTRACKS_);
@@ -44,34 +45,35 @@ const Main = () => {
     setNumOfSongs(event.target.value);
   };
 
-  useLayoutEffect(() => {
-    fetch(`${ip}/loginstatus`)
-      .then((res) => res.json())
-      .then((userLoginStatus) => {
-        if (!userLoginStatus) {
-          window.location.href = client;
-        }
-      });
-  });
-
-  useEffect(() => {
-    if (
+  const storageContainsData = () => {
+    return (
       "username" in sessionStorage &&
       "topTracks" in sessionStorage &&
       "savedTracks" in sessionStorage
-    ) {
-      let username = sessionStorage.getItem("username");
-      let topTracks = JSON.parse(sessionStorage.getItem("topTracks"));
-      let savedTracks = JSON.parse(sessionStorage.getItem("savedTracks"));
-      setUsername(username);
-      setTopSongs(topTracks);
-      setSavedTracks(savedTracks);
-      setTimeout(() => setDisplayList(topTracks));
+    );
+  };
+
+  const setDisplayFromStorageData = () => {
+    let username = sessionStorage.getItem("username");
+    let topTracks = JSON.parse(sessionStorage.getItem("topTracks"));
+    let savedTracks = JSON.parse(sessionStorage.getItem("savedTracks"));
+    setUsername(username);
+    setTopSongs(topTracks);
+    setSavedTracks(savedTracks);
+    setTimeout(() => setDisplayList(topTracks));
+  };
+
+  useEffect(() => {
+    let spotifyApi = new SpotifyWebApi();
+    initializeSpotifyApi(spotifyApi);
+
+    if (storageContainsData()) {
+      setDisplayFromStorageData();
     } else {
       Promise.all([
-        fetch(`${ip}/user`).then((res) => res.json()),
-        fetch(`${ip}/toptracks`).then((res) => res.json()),
-        fetch(`${ip}/savedtracks`).then((res) => res.json()),
+        spotifyApi.getMe(),
+        spotifyApi.getMyTopTracks({ limit: 36 }),
+        spotifyApi.getMySavedTracks({ limit: 36 }),
       ]).then(([userInfo, topTracksInfo, savedTracksInfo]) => {
         let username = userInfo.body.display_name;
         let topTracks = topTracksInfo.body.items;
@@ -100,9 +102,11 @@ const Main = () => {
   };
 
   const generateSongs = (seeds, option) => {
-    if (!seeds) {
+    if (seeds.length === 0) {
+      console.log(seeds);
       window.location.href = `${client}/generatelist/?option=${option}&nol=${numOfSongs}`;
     } else {
+      console.log(seeds);
       window.location.href = `${client}/generatelist/?seeds=${seeds}&nol=${numOfSongs}`;
     }
   };

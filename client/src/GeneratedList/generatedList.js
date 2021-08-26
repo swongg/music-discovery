@@ -1,11 +1,14 @@
-import React, { useState, useEffect, useLayoutEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Title from "../UI/title";
 import "./generatedList.css";
 import Entity from "./entity";
 import { Button, ButtonGroup } from "@material-ui/core/";
-import { client, ip } from "../constants";
+import { client } from "../constants";
+import SpotifyWebApi from "spotify-web-api-node";
+import { initializeSpotifyApi } from "../initializeSpotifyAPI";
 
 const url = new URL(window.location.href);
+const SEEDLIMIT = 5;
 let option = url.searchParams.get("option");
 let seeds_main = url.searchParams.get("seeds");
 let nol = url.searchParams.get("nol");
@@ -15,30 +18,21 @@ const options = {
   SAVEDTRACKS_: 1,
 };
 
-let createOptionArgForFetch = () => {
-  let fetchOptionArg;
-  switch (+option) {
-    case options.TOPTRACKS_:
-      fetchOptionArg = "toptracks";
-      break;
-    case options.SAVEDTRACKS_:
-      fetchOptionArg = "savedtracks";
-      break;
-  }
-  return fetchOptionArg;
-};
-
 let createRecommendationSeeds = (songs, option) => {
   let seeds = "";
   let songs_;
-  if (option == "toptracks") {
+  if (option == options.TOPTRACKS_) {
     songs_ = songs.body.items;
-  } else if (option == "savedtracks") {
+  } else if (option == options.SAVEDTRACKS_) {
     songs_ = songs.body.items.map((t) => t.track);
   }
-  for (let song of songs_) {
-    seeds = seeds + "," + song.id;
+
+  let limit = Math.min(SEEDLIMIT, songs_.length);
+
+  for (let i = 0; i < limit; i++) {
+    seeds = seeds + "," + songs_[i].id;
   }
+
   seeds = seeds.substring(1);
   return seeds;
 };
@@ -55,53 +49,46 @@ const GeneratedList = () => {
     window.location.href = `${client}/main`;
   };
 
-  useLayoutEffect(() => {
-    fetch(`${ip}/loginstatus`)
-      .then((res) => res.json())
-      .then((userLoginStatus) => {
-        if (!userLoginStatus) {
-          window.location.href = client;
-        }
-      });
-  });
-
-  useEffect(() => {
-    fetch(`${ip}/user`)
-      .then((response) => response.json())
-      .then((userInfo) => {
-        let username = userInfo.body.display_name;
-        setUsername(username);
-      });
-  }, []);
-
-  useEffect(() => {
-    if (!seeds_main) {
-      let fetchOptionArg = createOptionArgForFetch();
-
-      fetch(`${ip}/" + fetchOptionArg + "/?num=5`)
-        .then((response) => response.json())
-        .then((songs) => {
-          let seeds = createRecommendationSeeds(songs, fetchOptionArg);
-
-          setTimeout(() => {
-            fetch(`${ip}/recommendations/?seeds=${seeds}&nol=${nol}`)
-              .then((response) => response.json())
-              .then((songs) => {
-                let songs_ = songs.body.tracks;
-                setDisplayList(songs_);
-              });
-          }, 1);
-        });
+  const getSongRecommendations = (spotifyApi) => {
+    let songRetrieval;
+    if (option == options.TOPTRACKS_) {
+      songRetrieval = spotifyApi.getMyTopTracks();
     } else {
+      songRetrieval = spotifyApi.getMySavedTracks();
+    }
+
+    songRetrieval.then((songs) => {
+      let seeds = seeds_main;
+
+      if (seeds === null) {
+        seeds = createRecommendationSeeds(songs, option);
+      }
       setTimeout(() => {
-        fetch(`${ip}/recommendations/?seeds=${seeds_main}&nol=${nol}`)
-          .then((response) => response.json())
+        spotifyApi
+          .getRecommendations({
+            limit: nol,
+            min_energy: 0.4,
+            seed_tracks: seeds,
+            min_popularity: 50,
+          })
           .then((songs) => {
             let songs_ = songs.body.tracks;
             setDisplayList(songs_);
           });
       }, 1);
-    }
+    });
+  };
+
+  useEffect(() => {
+    let spotifyApi = new SpotifyWebApi();
+    initializeSpotifyApi(spotifyApi);
+
+    spotifyApi.getMe().then((userInfo) => {
+      let username = userInfo.body.display_name;
+      setUsername(username);
+
+      getSongRecommendations(spotifyApi);
+    });
   }, []);
 
   const backgroundSize = {
