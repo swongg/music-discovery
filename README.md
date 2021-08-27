@@ -19,7 +19,8 @@ Upon visting the web application, the user will first be prompted to authenticat
 <img src="docs/img/reccomended-list.png" alt="Screenshot" width="600"/>
 
 #### Technologies used:
-- [Spotify Api](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
+
+- [Spotify Api](https://developer.spotify.com/documentation/web-api/)
 - React
 - Material UI
 - Bootstrap 5
