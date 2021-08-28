@@ -11,7 +11,7 @@ https://music-discovery-1965b.web.app/
 
 ### About the project
 
-Upon visting the web application, the user will first be prompted to authenticate their spotify account login credentials. Once the user has successfully logged in, the their spotify songs will be displayed on to the screen. The user can then select up to five songs from their list, which will be used as inputs, to algorithmically generate a brand new list of songs for the user to explore.
+Upon visting the web application, the user will first be prompted to authenticate their spotify account login credentials. Once the user has successfully logged in, their spotify songs will be displayed on to the screen. The user can then select up to five songs from their list, which will be used as inputs, to algorithmically generate a brand new list of songs for the user to explore.
 
 ### Screenshots
 
