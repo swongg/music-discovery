@@ -15,7 +15,7 @@
 
 .center-inner__main {
   position: absolute;
-  top: 60px;
+  top: 15vh;
   left: 50%;
   transform: translate(-50%, 0%);
 }
@@ -94,11 +94,13 @@ img.color {
 }
 
 .library__main {
+  max-width:800px;
   height: 60vh;
   overflow: auto;
   position: relative;
   top: 30px;
   display: block;
+  overflow-x:hidden !important;
 }
 
 .text__main {
@@ -166,4 +168,9 @@ img.color {
 
 .paper__track:focus-visible {
   outline: none !important;
+}
+
+.track_block {
+  max-width: 150px !important;
+  flex-basis: 125px !important;
 }

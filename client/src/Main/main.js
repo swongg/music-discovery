@@ -148,7 +148,7 @@ const Main = () => {
           {displayList && displayList.length > 0 && (
             <div className="library__main">
               <Grid container spacing={1}>
-                <Grid item xs={12} sm container>
+                <Grid item xs={9} sm container>
                   {displayList.map((item) => (
                     <Track
                       key={item.id}

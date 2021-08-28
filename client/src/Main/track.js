@@ -64,7 +64,7 @@ const Track = (props) => {
   };
 
   return (
-    <Grid item xs={2}>
+    <Grid item xs={2} className="track_block">
       <Grid
         onClick={
           props.seedList.length >= 5 && isSelected != true
